@@ -2,8 +2,6 @@
 
 #### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
 
-##  `EmojiStory`
-
 ## Today's Trip
 
 **Date:** `Date`
@@ -25,6 +23,8 @@
   * `Expense` - $`Price`
   * ...
 * End of day total: **`EODBudget`**
+
+##  `EmojiStory`
 
 ## Journal Entry
 
