@@ -12,8 +12,6 @@
 
 **Distance:** `Mileage`
 
-**Total Trip Distance:** `TotalMileage`
-
 ![map from `StartingPoint` to `Destination`](maps/`mm-dd`.png "day map")
 
 ## The Budget
@@ -37,6 +35,7 @@
 ## Trip Statistics
 
 * **Total Distance:** `TotalMileage` miles
+* **Total Budget Spent:** 
 
 * **U.S. States**
   * New Hampshire
@@ -54,6 +53,4 @@
 
 ![total trip from fremont to `Destination`](maps/totals/`mm-dd`-total.png "total trip map")
 
-| [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md) |
-|------------------------------|-----------------------|--------------------------|
-
+#### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
