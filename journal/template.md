@@ -1,5 +1,7 @@
 # `StartingPointEmoji` `StartingPoint` to `Destination` `DestinationEmoji`
 
+#### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
+
 ##  `EmojiStory`
 
 ## Today's Trip
