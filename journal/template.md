@@ -36,17 +36,14 @@
 
 * **Total Distance:** `TotalMileage` miles
 * **Total Budget Spent:** 
-
 * **U.S. States**
   * New Hampshire
   * Maine
   * ...
-
 * **Canadian Provinces**
   * New Brunswick
   * Nova Scotia
   * ...
-
 * **National Parks**
   * Acadia
   * ...
