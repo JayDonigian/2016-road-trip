@@ -4,8 +4,6 @@
 
 ## Today's Trip
 
----
-
 **Date:** `Date`
 
 **Starting Point:** `StartingPointAddress`
@@ -20,8 +18,6 @@
 
 ## The Budget
 
----
-
 * $`PreviousDay` from previous day
 * $60 daily addition
 * -$`Expenses` expenses
@@ -32,8 +28,6 @@
 
 ## Journal Entry
 
----
-
 * `JournalEntry`
   * `JournalEntryDetail`
     * `EvenMoreDetail`
@@ -41,8 +35,6 @@
 * ...
 
 ## Trip Statistics
-
----
 
 * **Total Distance:** `TotalMileage` miles
 
@@ -61,8 +53,6 @@
   * ...
 
 ![total trip from fremont to `Destination`](maps/totals/`mm-dd`-total.png "total trip map")
-
----
 
 | [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md) |
 |------------------------------|-----------------------|--------------------------|
