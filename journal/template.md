@@ -10,21 +10,11 @@
 
 **Destination:** `DestinationAddress`
 
-**Distance:** `Mileage`
+**Distance:** `Mileage` miles
 
 **Photos:** [mm/dd Photos](https://jay-d.me/2016RT-mm-dd)
 
 ![map from `StartingPoint` to `Destination`](maps/`mm-dd`.png "day map")
-
-## The Budget
-
-* $`PreviousDay` from previous day
-* $60 daily addition
-* -$`Expenses` expenses
-  * `Expense` - $`Price`
-  * `Expense` - $`Price`
-  * ...
-* End of day total: **`EODBudget`**
 
 ##  `EmojiStory`
 
@@ -35,6 +25,16 @@
     * `EvenMoreDetail`
 * `JournalEntry`
 * ...
+
+## The Budget
+
+* $`PreviousDay` from previous day
+* $60 daily addition
+* -$`Expenses` expenses
+  * `Expense` - $`Price`
+  * `Expense` - $`Price`
+  * ...
+* End of day total: **`EODBudget`**
 
 ## Trip Statistics
 
