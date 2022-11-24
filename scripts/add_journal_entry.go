@@ -14,10 +14,9 @@ func main() {
 		log.Fatalf("ERROR: This script requires an argument specifying the date of the journal entry in the format: mm-dd\n.")
 	}
 
-	entryDate := os.Args[1]
-	_, err := time.Parse("01-02", entryDate)
+	entryDate, err := time.Parse("01-02", os.Args[1])
 	if err != nil {
-		log.Fatalf("ERROR: %s is not a valid date. Use the format: mm-dd\n.", entryDate)
+		log.Fatalf("ERROR: %s is not a valid date. Use the format: mm-dd\n.", os.Args[1])
 	}
 
 	err = os.Chdir("journal")
@@ -29,19 +28,19 @@ func main() {
 	mapsDir := "maps/"
 	totalsDir := mapsDir + "totals/"
 
-	mapFileName := mapsDir + entryDate + ".png"
+	mapFileName := mapsDir + entryDate.Format("01-02") + ".png"
 	_, err = os.Stat(mapFileName)
 	if err != nil {
 		log.Printf("WARNING: %s does not exist\n", mapFileName)
 	}
 
-	totalsFileName := totalsDir + entryDate + "-total.png"
+	totalsFileName := totalsDir + entryDate.Format("01-02") + "-total.png"
 	_, err = os.Stat(totalsFileName)
 	if err != nil {
 		log.Printf("WARNING: %s does not exist\n", totalsFileName)
 	}
 
-	journalFile := entryDate + ".md"
+	journalFile := entryDate.Format("01-02") + ".md"
 	_, err = os.Stat(journalFile)
 	if err == nil {
 		log.Fatalf("ERROR: %s already exists\n", journalFile)
@@ -54,7 +53,7 @@ func main() {
 	}
 }
 
-func copyTemplate(dst, date string) error {
+func copyTemplate(dst string, date time.Time) error {
 	src := "template.md"
 
 	sourceFileStat, err := os.Stat(src)
@@ -77,14 +76,16 @@ func copyTemplate(dst, date string) error {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.Contains(line, "mm/dd") {
-			slashDate := strings.Replace(date, "-", "/", -1)
-			line = strings.Replace(line, "mm/dd", slashDate, -1)
+			line = strings.Replace(line, "mm/dd", date.Format("01/02"), -1)
 		}
 		if strings.Contains(line, "`mm-dd`") {
-			line = strings.Replace(line, "`mm-dd`", date, -1)
+			line = strings.Replace(line, "`mm-dd`", date.Format("01-02"), -1)
 		}
 		if strings.Contains(line, "mm-dd") {
-			line = strings.Replace(line, "mm-dd", date, -1)
+			line = strings.Replace(line, "mm-dd", date.Format("01-02"), -1)
+		}
+		if strings.Contains(line, "`Date`") {
+			line = strings.Replace(line, "`Date`", date.Format("Monday, January 02")+", 2016", -1)
 		}
 		lines = append(lines, line)
 	}
