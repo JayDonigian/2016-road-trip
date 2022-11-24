@@ -12,7 +12,7 @@
 
 **Distance:** `Mileage`
 
-**Photos:** [Month DD Photos](https://jay-d.me/2016RT-mm-dd)
+**Photos:** [mm/dd Photos](https://jay-d.me/2016RT-mm-dd)
 
 ![map from `StartingPoint` to `Destination`](maps/`mm-dd`.png "day map")
 
