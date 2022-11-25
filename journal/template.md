@@ -31,9 +31,7 @@
 * `PreviousSpend` from previous day
 * $60 daily addition
 * -$`Expenses` expenses
-  * `Expense` - $`Price`
-  * `Expense` - $`Price`
-  * ...
+  * $`Price` - `Expense`
 * End of day total: **`EODBudget`**
 
 ## Trip Statistics
