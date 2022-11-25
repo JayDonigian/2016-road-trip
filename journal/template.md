@@ -1,4 +1,4 @@
-# `StartingPointEmoji` `StartingPoint` to `Destination` `DestinationEmoji`
+# `StartEmoji` `Start` to `End` `EndEmoji`
 
 #### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
 
@@ -6,15 +6,15 @@
 
 **Date:** `Date`
 
-**Starting Point:** `StartingPointAddress`
+**Starting Point:** `StartLong`
 
-**Destination:** `DestinationAddress`
+**Destination:** `EndLong`
 
 **Distance:** `Mileage` miles
 
 **Photos:** [mm/dd Photos](https://jay-d.me/2016RT-mm-dd)
 
-![map from `StartingPoint` to `Destination`](maps/`mm-dd`.png "day map")
+![map from `Start` to `End`](maps/`mm-dd`.png "day map")
 
 ##  `EmojiStory`
 
@@ -28,7 +28,7 @@
 
 ## The Budget
 
-* $`PreviousDay` from previous day
+* `PreviousSpend` from previous day
 * $60 daily addition
 * -$`Expenses` expenses
   * `Expense` - $`Price`
@@ -39,7 +39,7 @@
 ## Trip Statistics
 
 * **Total Distance:** `TotalMileage` miles
-* **Total Budget Spent:** 
+* **Total Budget Spent:** `TotalSpend` 
 * **U.S. States**
   * New Hampshire
   * Maine
@@ -52,6 +52,6 @@
   * Acadia
   * ...
 
-![total trip from fremont to `Destination`](maps/totals/`mm-dd`-total.png "total trip map")
+![total trip from Fremont to `End`](maps/totals/`mm-dd`-total.png "total trip map")
 
 #### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
