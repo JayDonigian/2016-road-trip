@@ -1,6 +1,6 @@
 # `StartEmoji` `Start` to `End` `EndEmoji`
 
-#### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
+#### [<< Previous Post](`Previous`.md) | [Index](../README.md) | [Next Post >>](`Next`.md)
 
 ## Today's Trip
 
@@ -52,4 +52,4 @@
 
 ![total trip from Fremont to `End`](maps/totals/`mm-dd`-total.png "total trip map")
 
-#### [<< Previous Post](mm-dd.md) | [Index](../README.md) | [Next Post >>](mm-dd.md)
+#### [<< Previous Post](`Previous`.md) | [Index](../README.md) | [Next Post >>](`Next`.md)

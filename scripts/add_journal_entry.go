@@ -163,7 +163,12 @@ type replacement struct {
 func applyTemplate(data entryInfo) ([]string, error) {
 	template := "journal/template.md"
 
+	prevDay := data.date.AddDate(0, 0, -1)
+	nextDay := data.date.AddDate(0, 0, 1)
+
 	replacements := []replacement{
+		{find: "`Previous`", replace: prevDay.Format("01-02")},
+		{find: "`Next`", replace: nextDay.Format("01-02")},
 		{find: "mm/dd", replace: data.date.Format("01/02")},
 		{find: "`mm-dd`", replace: data.date.Format("01-02")},
 		{find: "mm-dd", replace: data.date.Format("01-02")},
