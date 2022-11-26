@@ -1,4 +1,4 @@
-package main
+package journal
 
 import (
 	"bufio"
@@ -48,7 +48,17 @@ func (e *Entry) NewFromTemplate(template string) error {
 		return err
 	}
 
-	return e.Write(lines)
+	err = e.Write(lines)
+	if err != nil {
+		return err
+	}
+
+	err = e.WriteIndex()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (e *Entry) InfoFromPrevious() error {
@@ -68,6 +78,7 @@ func (e *Entry) InfoFromPrevious() error {
 
 	return nil
 }
+
 func (e *Entry) PreviousEntry() (Entry, error) {
 	path := fmt.Sprintf("journal/%s.md", e.Date.AddDate(0, 0, -1).Format("01-02"))
 
@@ -84,7 +95,7 @@ func (e *Entry) PreviousEntry() (Entry, error) {
 	if err != nil {
 		return Entry{}, err
 	}
-	defer source.Close()
+	defer func() { _ = source.Close() }()
 
 	ei := Entry{Date: e.Date}
 	var lineCount int
@@ -94,7 +105,7 @@ func (e *Entry) PreviousEntry() (Entry, error) {
 		line := scanner.Text()
 		lineCount++
 
-		// This mess can be cleaned up by adding logic to unmarshal previous entries
+		// This mess can be cleaned up by adding logic to Unmarshal previous entries
 		if strings.Contains(line, "* End of day total:") {
 			totalString := strings.Replace(line, "* End of day total: **$", "", 1)
 			totalString = strings.Replace(totalString, "**", "", 2)
@@ -186,29 +197,35 @@ func (e *Entry) Write(lines []string) error {
 	return nil
 }
 
-type Journal struct {
-	Entries []Entry `json:"entries"`
+func (e *Entry) WriteIndex() error {
+	f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+	defer func() { _ = f.Close() }()
+
+	_, err = f.WriteString(fmt.Sprintf("%s\n", e.Index()))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func unmarshal(jsonPath string) (Journal, error) {
-	jsonFile, err := os.Open(jsonPath)
-	if err != nil {
-		return Journal{}, err
-	}
-	defer func() { _ = jsonFile.Close() }()
+func (e *Entry) Index() string {
+	date := e.Date.Format("01-02")
+	return fmt.Sprintf("### %s - %s  [%s](journal/%s.md) %s", date, e.Start.Emoji, e.Short(), date, e.End.Emoji)
+}
 
-	bytes, err := io.ReadAll(jsonFile)
-	if err != nil {
-		return Journal{}, err
+func (e *Entry) Short() string {
+	if e.Start.Short == e.End.Short {
+		return e.Start.Short
 	}
+	return fmt.Sprintf("%s to %s", e.Start.Short, e.End.Short)
+}
 
-	entryInfo := Journal{}
-	err = json.Unmarshal(bytes, &entryInfo)
-	if err != nil {
-		return Journal{}, err
-	}
-
-	return entryInfo, nil
+type Journal struct {
+	Entries []Entry `json:"entries"`
 }
 
 func (j *Journal) AddYearToDates(y int) error {
@@ -239,4 +256,70 @@ func (j *Journal) MissingEntries() []Entry {
 		}
 	}
 	return missing
+}
+
+func Unmarshal(jsonPath string) (Journal, error) {
+	jsonFile, err := os.Open(jsonPath)
+	if err != nil {
+		return Journal{}, err
+	}
+	defer func() { _ = jsonFile.Close() }()
+
+	bytes, err := io.ReadAll(jsonFile)
+	if err != nil {
+		return Journal{}, err
+	}
+
+	entryInfo := Journal{}
+	err = json.Unmarshal(bytes, &entryInfo)
+	if err != nil {
+		return Journal{}, err
+	}
+
+	return entryInfo, nil
+}
+
+type replacement struct {
+	find, replace string
+}
+
+// TODO: This has nested for-loops, optimize it if you can.
+func apply(templatePath string, replacements []replacement) ([]string, error) {
+	sourceFileStat, err := os.Stat(templatePath)
+	if err != nil {
+		return nil, err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return nil, fmt.Errorf("%s is not a regular file", templatePath)
+	}
+
+	source, err := os.Open(templatePath)
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = source.Close() }()
+
+	var lines []string
+	scanner := bufio.NewScanner(source)
+	for scanner.Scan() {
+		line := scanner.Text()
+		line = findAndReplace(line, replacements)
+		lines = append(lines, line)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return lines, nil
+}
+
+func findAndReplace(s string, reps []replacement) string {
+	for _, rep := range reps {
+		if strings.Contains(s, rep.find) {
+			s = strings.Replace(s, rep.find, rep.replace, -1)
+		}
+	}
+	return s
 }
