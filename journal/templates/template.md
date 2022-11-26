@@ -1,6 +1,6 @@
 # `StartEmoji` `Start` to `End` `EndEmoji`
 
-#### [<< Previous Post](`Previous`.md) | [Index](../README.md) | [Next Post >>](`Next`.md)
+#### [<< Previous Post](`Previous`.md) | [Index](../../README.md) | [Next Post >>](`Next`.md)
 
 ## Today's Trip
 
@@ -21,35 +21,28 @@
 ## Journal Entry
 
 * `JournalEntry`
-  * `JournalEntryDetail`
-    * `EvenMoreDetail`
-* `JournalEntry`
-* ...
 
 ## The Budget
 
-* `PreviousSpend` from previous day
-* $60 daily addition
-* -$`Expenses` expenses
-  * $`Price` - `Expense`
-* End of day total: **`EODBudget`**
+* $`PreviousSpend` from previous day
+* $60.00 daily addition
+* $-`Expenses` expenses
+* `EXPENSES`
+* End of day total: $**`ExpenseTotal`**
 
 ## Trip Statistics
 
 * **Total Distance:** `TotalMileage` miles
-* **Total Budget Spent:** `TotalSpend` 
+* **Total Budget Spent:** $`TotalSpend` 
 * **U.S. States**
   * New Hampshire
   * Maine
-  * ...
 * **Canadian Provinces**
   * New Brunswick
   * Nova Scotia
-  * ...
 * **National Parks**
   * Acadia
-  * ...
 
 ![total trip from Fremont to `End`](maps/totals/`mm-dd`-total.png "total trip map")
 
-#### [<< Previous Post](`Previous`.md) | [Index](../README.md) | [Next Post >>](`Next`.md)
+#### [<< Previous Post](`Previous`.md) | [Index](../../README.md) | [Next Post >>](`Next`.md)

@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -12,13 +14,50 @@ import (
 	"time"
 )
 
+type Info struct {
+	Date                time.Time
+	RunningMileageTotal int
+	RunningExpenseTotal float64
+	DailyExpenseTotal   float64
+	BudgetStart         float64
+	BudgetEnd           float64
+
+	Mileage    int    `json:"mileage"`
+	DateString string `json:"date"`
+	Start      struct {
+		Emoji string `json:"emoji"`
+		Short string `json:"short"`
+		Long  string `json:"long"`
+	} `json:"start"`
+	End struct {
+		Emoji string `json:"emoji"`
+		Short string `json:"short"`
+		Long  string `json:"long"`
+	} `json:"end"`
+	DailyExpenses []struct {
+		Item string  `json:"item"`
+		Cost float64 `json:"cost"`
+	} `json:"expenses"`
+}
+
 func main() {
-	info, err := parseArgs()
+	err := parseArgs()
 	if err != nil {
 		log.Fatalf("ERROR: while parsing arguments - %s", err.Error())
 	}
 
-	err = checkFiles(info.date.Format("01-02"))
+	info, err := unmarshalInfo()
+	if err != nil {
+		log.Fatalf("ERROR: while unmarshaling JSON file - %s", err.Error())
+	}
+
+	t, err := time.Parse("01-02", info.DateString)
+	if err != nil {
+		log.Fatalf("ERROR: while parsing date field - %s", err.Error())
+	}
+	info.Date = time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
+
+	err = checkFiles(info.Date.Format("01-02"))
 	if err != nil {
 		log.Fatalf("ERROR: while checking files - %s", err.Error())
 	}
@@ -29,49 +68,41 @@ func main() {
 	}
 }
 
-type entryInfo struct {
-	date                                      time.Time
-	startShort, startLong                     string
-	endShort, endLong                         string
-	mileage, previousMileage                  int
-	budget, previousSpend, previousTotalSpend string
-}
-
-func parseArgs() (entryInfo, error) {
-	dateArg := flag.String("date", "", "date is a required argument in the form -date=mm-dd")
-	startShortArg := flag.String("start", "", "start is a short description (1-3 words) of the starting location")
-	endShortArg := flag.String("end", "", "end is a short description (1-3 words) of the ending location")
-	startLongArg := flag.String("start-long", "", "start is a longer description (name, state, country) of the starting location")
-	endLongArg := flag.String("end-long", "", "end is a longer description (name, state, country) of the ending location")
-	milesArg := flag.Int("miles", 0, "miles is the number of miles driven on the day of the journal entry")
+func parseArgs() error {
+	filepathArg := flag.String("filepath", "", "filepath is a required argument that should point to a JSON file")
 
 	flag.Parse()
 
-	stringArgs := []*string{dateArg, startShortArg, endShortArg, startLongArg, endLongArg}
-	for _, arg := range stringArgs {
-		if *arg == "" {
-			return entryInfo{}, errors.New("missing a required argument")
-		}
+	if *filepathArg == "" {
+		return errors.New("filepath is a required argument")
 	}
 
-	if *milesArg == 0 {
-		return entryInfo{}, errors.New("missing a required argument")
+	if !strings.HasSuffix(*filepathArg, ".json") {
+		return errors.New("the provided file should be a JSON file")
 	}
 
-	t, err := time.Parse("01-02", *dateArg)
+	return nil
+}
+
+func unmarshalInfo() (Info, error) {
+	jsonFile, err := os.Open("journal/templates/new_entry.json")
 	if err != nil {
-		return entryInfo{}, err
+		return Info{}, nil
 	}
-	entryDate := time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
+	defer jsonFile.Close()
 
-	return entryInfo{
-		date:       entryDate,
-		startShort: *startShortArg,
-		startLong:  *startLongArg,
-		endShort:   *endShortArg,
-		endLong:    *endLongArg,
-		mileage:    *milesArg,
-	}, nil
+	bytes, err := io.ReadAll(jsonFile)
+	if err != nil {
+		return Info{}, err
+	}
+
+	newEntry := Info{}
+	err = json.Unmarshal(bytes, &newEntry)
+	if err != nil {
+		return Info{}, err
+	}
+
+	return newEntry, nil
 }
 
 func checkFiles(formattedDate string) error {
@@ -90,44 +121,48 @@ func checkFiles(formattedDate string) error {
 	return nil
 }
 
-func createFromTemplate(entry entryInfo) error {
-	previousEntry, err := getInfo(entry.date.AddDate(0, 0, -1))
+func createFromTemplate(entry Info) error {
+	previous, err := getInfo(entry.Date.AddDate(0, 0, -1))
 	if err != nil {
 		return err
 	}
 
-	entry.previousMileage = previousEntry.mileage
-	entry.previousSpend = previousEntry.budget
-	entry.previousTotalSpend = previousEntry.previousTotalSpend
+	for _, expense := range entry.DailyExpenses {
+		entry.DailyExpenseTotal += expense.Cost
+	}
+
+	entry.BudgetStart = previous.BudgetEnd + 60
+	entry.BudgetEnd = previous.BudgetEnd + 60 - entry.DailyExpenseTotal
+	entry.RunningExpenseTotal = entry.DailyExpenseTotal + previous.RunningExpenseTotal
+	entry.RunningMileageTotal = entry.Mileage + previous.RunningMileageTotal
 
 	lines, err := applyTemplate(entry)
 	if err != nil {
 		return err
 	}
 
-	return writeTemplate(lines, entry.date.Format("01-02"))
+	return writeTemplate(lines, entry.Date.Format("01-02"))
 }
 
-func getInfo(date time.Time) (entryInfo, error) {
+func getInfo(date time.Time) (Info, error) {
 	formattedDate := date.Format("01-02")
 	path := "journal/" + formattedDate + ".md"
 	prevFile, err := os.Stat(path)
 	if err != nil {
-		return entryInfo{}, err
+		return Info{}, err
 	}
 
 	if !prevFile.Mode().IsRegular() {
-		return entryInfo{}, fmt.Errorf("%s is not a regular file", path)
+		return Info{}, fmt.Errorf("%s is not a regular file", path)
 	}
 
 	source, err := os.Open(path)
 	if err != nil {
-		return entryInfo{}, err
+		return Info{}, err
 	}
 	defer source.Close()
 
-	ei := entryInfo{date: date}
-	//var lines []string
+	ei := Info{Date: date}
 	var lineCount int
 
 	scanner := bufio.NewScanner(source)
@@ -135,23 +170,36 @@ func getInfo(date time.Time) (entryInfo, error) {
 		line := scanner.Text()
 		lineCount++
 
+		// This mess can be cleaned up by adding logic to unmarshal previous entries
 		if strings.Contains(line, "* End of day total:") {
-			b := strings.Replace(line, "* End of day total: **", "", 1)
-			ei.budget = strings.Replace(b, "**", "", 1)
+			totalString := strings.Replace(line, "* End of day total: **", "", 1)
+			totalString = strings.Replace(totalString, "$", "", 1)
+			totalString = strings.Replace(totalString, "**", "", 1)
+			dailyExpenseTotal, err := strconv.ParseFloat(totalString, 64)
+			if err != nil {
+				return Info{}, err
+			}
+			ei.BudgetEnd = dailyExpenseTotal
+		}
+
+		if strings.Contains(line, "* **Total Budget Spent:**") {
+			totalString := strings.Split(line, " ")[4]
+			totalString = strings.Replace(totalString, "$", "", 1)
+			runningExpenseTotal, err := strconv.ParseFloat(totalString, 64)
+			if err != nil {
+				return Info{}, err
+			}
+			ei.RunningExpenseTotal = runningExpenseTotal
 		}
 
 		if strings.Contains(line, "* **Total Distance:**") {
 			mileage, _ := strconv.Atoi(strings.Split(line, " ")[3])
-			ei.mileage = mileage
-		}
-
-		if strings.Contains(line, "* **Total Budget Spent:**") {
-			ei.previousTotalSpend = strings.Split(line, " ")[4]
+			ei.RunningMileageTotal = mileage
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return entryInfo{}, err
+		return Info{}, err
 	}
 	return ei, nil
 }
@@ -160,31 +208,41 @@ type replacement struct {
 	find, replace string
 }
 
-func applyTemplate(data entryInfo) ([]string, error) {
-	template := "journal/template.md"
+func applyTemplate(data Info) ([]string, error) {
+	template := "journal/templates/template.md"
 
-	prevDay := data.date.AddDate(0, 0, -1)
-	nextDay := data.date.AddDate(0, 0, 1)
+	prevDay := data.Date.AddDate(0, 0, -1)
+	nextDay := data.Date.AddDate(0, 0, 1)
+
+	var expensesReplacements string
+	for _, exp := range data.DailyExpenses {
+		expensesReplacements += fmt.Sprintf("  * %s - $%.2f\n", exp.Item, exp.Cost)
+	}
 
 	replacements := []replacement{
+		{find: "`StartEmoji`", replace: data.Start.Emoji},
+		{find: "`EndEmoji`", replace: data.End.Emoji},
 		{find: "`Previous`", replace: prevDay.Format("01-02")},
 		{find: "`Next`", replace: nextDay.Format("01-02")},
-		{find: "mm/dd", replace: data.date.Format("01/02")},
-		{find: "`mm-dd`", replace: data.date.Format("01-02")},
-		{find: "mm-dd", replace: data.date.Format("01-02")},
-		{find: "`Date`", replace: data.date.Format("Monday, January 02") + ", 2016"},
-		{find: "`StartLong`", replace: data.startLong},
-		{find: "`EndLong`", replace: data.endLong},
-		{find: "`PreviousSpend`", replace: data.previousSpend},
-		{find: "`Mileage`", replace: strconv.Itoa(data.mileage)},
-		{find: "`TotalMileage`", replace: strconv.Itoa(data.previousMileage + data.mileage)},
-		{find: "TotalSpend", replace: data.previousTotalSpend + " + Expenses"},
+		{find: "mm/dd", replace: data.Date.Format("01/02")},
+		{find: "`mm-dd`", replace: data.Date.Format("01-02")},
+		{find: "mm-dd", replace: data.Date.Format("01-02")},
+		{find: "`Date`", replace: data.Date.Format("Monday, January 02") + ", 2016"},
+		{find: "`StartLong`", replace: data.Start.Long},
+		{find: "`EndLong`", replace: data.End.Long},
+		{find: "`PreviousSpend`", replace: fmt.Sprintf("%.2f", data.BudgetStart-60)},
+		{find: "`Mileage`", replace: strconv.Itoa(data.Mileage)},
+		{find: "`Expenses`", replace: fmt.Sprintf("%.2f", data.DailyExpenseTotal)},
+		{find: "`ExpenseTotal`", replace: fmt.Sprintf("%.2f", data.BudgetEnd)},
+		{find: "`TotalSpend`", replace: fmt.Sprintf("%.2f", data.RunningExpenseTotal)},
+		{find: "`TotalMileage`", replace: strconv.Itoa(data.RunningMileageTotal)},
+		{find: "`EXPENSES`", replace: expensesReplacements},
 	}
-	if data.startShort == data.endShort {
-		replacements = append(replacements, replacement{find: "`Start` to `End`", replace: data.startShort})
+	if data.Start.Short == data.End.Short {
+		replacements = append(replacements, replacement{find: "`Start` to `End`", replace: data.Start.Short})
 	}
-	replacements = append(replacements, replacement{find: "`Start`", replace: data.startShort})
-	replacements = append(replacements, replacement{find: "`End`", replace: data.endShort})
+	replacements = append(replacements, replacement{find: "`Start`", replace: data.Start.Short})
+	replacements = append(replacements, replacement{find: "`End`", replace: data.End.Short})
 
 	lines, err := apply(template, replacements)
 	if err != nil {
