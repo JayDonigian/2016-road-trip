@@ -1,49 +1,51 @@
 {
-  "07-06": {
-    "date": "07-06",
-    "mileage": 125,
-    "start": {
-      "start_emoji": "🖼",
-      "start_short": "Valley View",
-      "start_long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
-    },
-    "end": {
-      "end_emoji": "🐥",
-      "end_short": "Ellenwood",
-      "end_long": "Ellenwood Provincial Park, Yarmouth, Nova Scotia, Canada"
-    },
-    "expenses": [
-      {
-        "item": "Campsite",
-        "cost": 27.00
+  "entries": [
+    {
+      "date": "07-06",
+      "mileage": 125,
+      "start": {
+        "emoji": "🖼",
+        "short": "Valley View",
+        "long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
       },
-      {
-        "item": "Camp Supplies",
-        "cost": 19.00
+      "end": {
+        "emoji": "🐥",
+        "short": "Ellenwood",
+        "long": "Ellenwood Provincial Park, Yarmouth, Nova Scotia, Canada"
       },
-      {
-        "item": "Groceries",
-        "cost": 27.00
+      "expenses": [
+        {
+          "item": "Campsite",
+          "cost": 27.00
+        },
+        {
+          "item": "Camp Supplies",
+          "cost": 19.00
+        },
+        {
+          "item": "Groceries",
+          "cost": 27.00
+        },
+        {
+          "item": "Stakes",
+          "cost": 2.50
+        }
+      ]
+    },
+    {
+      "date": "07-07",
+      "mileage": 41,
+      "start": {
+        "emoji": "🐥",
+        "short": "Ellenwood",
+        "long": "Ellenwood Provincial Park, Yarmouth, Nova Scotia, Canada"
       },
-      {
-        "item": "Stakes",
-        "cost": 2.50
-      }
-    ]
-  },
-  "07-07": {
-    "date": "07-07",
-    "mileage": 41,
-    "start": {
-      "start_emoji": "🐥",
-      "start_short": "Ellenwood",
-      "start_long": "Ellenwood Provincial Park, Yarmouth, Nova Scotia, Canada"
-    },
-    "end": {
-      "end_emoji": "🐥",
-      "end_short": "Ellenwood",
-      "end_long": "Ellenwood Provincial Park, Yarmouth, Nova Scotia, Canada"
-    },
-    "expenses": []
-  }
+      "end": {
+        "emoji": "🐥",
+        "short": "Ellenwood",
+        "long": "Ellenwood Provincial Park, Yarmouth, Nova Scotia, Canada"
+      },
+      "expenses": []
+    }
+  ]
 }

@@ -27,8 +27,8 @@
 * $`PreviousSpend` from previous day
 * $60.00 daily addition
 * $-`Expenses` expenses
-* `EXPENSES`
-* End of day total: $**`ExpenseTotal`**
+`EXPENSES`
+* End of day total: **$`ExpenseTotal`**
 
 ## Trip Statistics
 
