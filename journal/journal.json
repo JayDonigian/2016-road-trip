@@ -1,6 +1,285 @@
 {
   "entries": [
     {
+      "date": "06-26",
+      "mileage": 69,
+      "start": {
+        "emoji": "🇺🇸",
+        "short": "Fremont",
+        "long": "Fremont, New Hampshire"
+      },
+      "end": {
+        "emoji": "🦞",
+        "short": "Bar Harbor",
+        "long": "Bluenose Inn, Bar Harbor, Maine"
+      },
+      "expenses": [
+        {
+          "item": "Campfire Grate & Camp Dessert",
+          "cost": 27.00
+        },
+        {
+          "item": "Tributary Beer & Sticker",
+          "cost": 23.00
+        },
+        {
+          "item": "Starbucks",
+          "cost": 4.50
+        }
+      ]
+    },
+    {
+      "date": "06-27",
+      "mileage": 69,
+      "start": {
+        "emoji": "🦞",
+        "short": "Bar Harbor",
+        "long": "Bluenose Inn, Bar Harbor, Maine"
+      },
+      "end": {
+        "emoji": "🌲",
+        "short": "Acadia",
+        "long": "Blackwoods Campground, Acadia National Park, Maine"
+      },
+      "expenses": [
+        {
+          "item": "Campground",
+          "cost": 45.00
+        },
+        {
+          "item": "Wood",
+          "cost": 10.00
+        },
+        {
+          "item": "Ice & Seam Seal",
+          "cost": 8.00
+        }
+      ]
+    },
+    {
+      "date": "06-28",
+      "mileage": 49,
+      "start": {
+        "emoji": "🌲",
+        "short": "Acadia",
+        "long": "Blackwoods Campground, Acadia National Park, Maine"
+      },
+      "end": {
+        "emoji": "🌲",
+        "short": "Acadia",
+        "long": "Blackwoods Campground, Acadia National Park, Maine"
+      },
+      "expenses": [
+        {
+          "item": "Groceries & Whiskey",
+          "cost": 28.00
+        }
+      ]
+    },
+    {
+      "date": "06-29",
+      "mileage": 39,
+      "start": {
+        "emoji": "🌲",
+        "short": "Acadia",
+        "long": "Blackwoods Campground, Acadia National Park, Maine"
+      },
+      "end": {
+        "emoji": "🌲",
+        "short": "Acadia",
+        "long": "Blackwoods Campground, Acadia National Park, Maine"
+      },
+      "expenses": []
+    },
+    {
+      "date": "06-30",
+      "mileage": 202,
+      "start": {
+        "emoji": "🌲",
+        "short": "Acadia",
+        "long": "Blackwoods Campground, Acadia National Park, Maine"
+      },
+      "end": {
+        "emoji": "🦫",
+        "short": "Harding's Point",
+        "long": "Harding's Point Campground, New Brunswick, Canada"
+      },
+      "expenses": [
+        {
+          "item": "Campground",
+          "cost": 35.00
+        },
+        {
+          "item": "Groceries",
+          "cost": 31.00
+        },
+        {
+          "item": "6pk IPA",
+          "cost": 14.00
+        }
+      ]
+    },
+    {
+      "date": "07-01",
+      "mileage": 139,
+      "start": {
+        "emoji": "🦫",
+        "short": "Harding's Point",
+        "long": "Harding's Point Campground, New Brunswick, Canada"
+      },
+      "end": {
+        "emoji": "🦟",
+        "short": "The Shire",
+        "long": "The Shire, New Horton, New Brunswick, Canada"
+      },
+      "expenses": [
+        {
+          "item": "Gas",
+          "cost": 30.00
+        },
+        {
+          "item": "Beer & Frozen Pizza",
+          "cost": 23.00
+        },
+        {
+          "item": "Reversing Falls Admission",
+          "cost": 6.50
+        }
+      ]
+    },
+    {
+      "date": "07-02",
+      "mileage": 202,
+      "start": {
+        "emoji": "🦟",
+        "short": "The Shire",
+        "long": "The Shire, New Horton, New Brunswick, Canada"
+      },
+      "end": {
+        "emoji": "🏝",
+        "short": "Five Islands",
+        "long": "Five Islands Resort & RV Park, Lower Five Islands, Nova Scotia, Canada"
+      },
+      "expenses": [
+        {
+          "item": "Groceries",
+          "cost": 35.00
+        },
+        {
+          "item": "Campground",
+          "cost": 31.00
+        },
+        {
+          "item": "Walmart Run",
+          "cost": 30.00
+        },
+        {
+          "item": "Wood",
+          "cost": 6.00
+        }
+      ]
+    },
+    {
+      "date": "07-03",
+      "mileage": 198,
+      "start": {
+        "emoji": "🏝",
+        "short": "Five Islands",
+        "long": "Five Islands Resort & RV Park, Lower Five Islands, Nova Scotia, Canada"
+      },
+      "end": {
+        "emoji": "🖼",
+        "short": "Valley View",
+        "long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
+      },
+      "expenses": [
+        {
+          "item": "Gas",
+          "cost": 41.00
+        },
+        {
+          "item": "Campsite",
+          "cost": 23.00
+        },
+        {
+          "item": "Cheese",
+          "cost": 13.00
+        },
+        {
+          "item": "Fish & Ice",
+          "cost": 8.50
+        }
+      ]
+    },
+    {
+      "date": "07-04",
+      "mileage": 24,
+      "start": {
+        "emoji": "🖼",
+        "short": "Valley View",
+        "long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
+      },
+      "end": {
+        "emoji": "🖼",
+        "short": "Valley View",
+        "long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
+      },
+      "expenses": [
+        {
+          "item": "Campsite",
+          "cost": 23.00
+        },
+        {
+          "item": "Groceries",
+          "cost": 4.50
+        }
+      ]
+    },
+    {
+      "date": "07-05",
+      "mileage": 109,
+      "start": {
+        "emoji": "🖼",
+        "short": "Valley View",
+        "long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
+      },
+      "end": {
+        "emoji": "🖼",
+        "short": "Valley View",
+        "long": "Valley View Provincial Park, Hampton, Nova Scotia, Canada"
+      },
+      "expenses": [
+        {
+          "item": "Gas",
+          "cost": 41.00
+        },
+        {
+          "item": "Luckett Vineyards",
+          "cost": 32.00
+        },
+        {
+          "item": "Campsite",
+          "cost": 23.00
+        },
+        {
+          "item": "Annapolis Cider Co.",
+          "cost": 21.50
+        },
+        {
+          "item": "L'Acadie Vineyards",
+          "cost": 18.00
+        },
+        {
+          "item": "Domaine de Grand Pré Vineyards",
+          "cost": 21.50
+        },
+        {
+          "item": "Sea Level Brewing",
+          "cost": 6.50
+        }
+      ]
+    },
+    {
       "date": "07-06",
       "mileage": 125,
       "start": {
