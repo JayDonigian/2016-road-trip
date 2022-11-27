@@ -66,11 +66,6 @@ func (e *Entry) HasTotalMapFile() bool {
 }
 
 func (e *Entry) NewFromTemplate(template string) error {
-	err := e.InfoFromPrevious()
-	if err != nil {
-		return err
-	}
-
 	lines, err := e.Apply(template)
 	if err != nil {
 		return err
@@ -85,24 +80,6 @@ func (e *Entry) NewFromTemplate(template string) error {
 	if err != nil {
 		return err
 	}
-
-	return nil
-}
-
-func (e *Entry) InfoFromPrevious() error {
-	previous, err := e.PreviousEntry()
-	if err != nil {
-		return err
-	}
-
-	for _, expense := range e.DailyExpenses {
-		e.DailyExpenseTotal += expense.Cost
-	}
-
-	e.BudgetStart = previous.BudgetEnd + 60
-	e.BudgetEnd = previous.BudgetEnd + 60 - e.DailyExpenseTotal
-	e.RunningExpenseTotal = e.DailyExpenseTotal + previous.RunningExpenseTotal
-	e.RunningMileageTotal = e.Mileage + previous.RunningMileageTotal
 
 	return nil
 }

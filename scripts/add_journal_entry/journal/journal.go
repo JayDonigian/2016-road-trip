@@ -30,12 +30,28 @@ func Unmarshal(jsonPath string) (*Journal, error) {
 		return nil, err
 	}
 
+	var previous Entry
+	var t time.Time
 	for i, e := range j.Entries {
-		t, err := time.Parse("01-02", e.DateString)
+		t, err = time.Parse("01-02", e.DateString)
 		if err != nil {
 			return nil, err
 		}
 		j.Entries[i].Date = time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
+
+		previous, err = e.PreviousEntry()
+		if err != nil {
+			return nil, err
+		}
+
+		for _, expense := range e.DailyExpenses {
+			e.DailyExpenseTotal += expense.Cost
+		}
+
+		e.BudgetStart = previous.BudgetEnd + 60
+		e.BudgetEnd = previous.BudgetEnd + 60 - e.DailyExpenseTotal
+		e.RunningExpenseTotal = e.DailyExpenseTotal + previous.RunningExpenseTotal
+		e.RunningMileageTotal = e.Mileage + previous.RunningMileageTotal
 	}
 
 	return j, nil
