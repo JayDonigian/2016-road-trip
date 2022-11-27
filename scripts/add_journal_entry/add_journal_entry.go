@@ -19,11 +19,6 @@ func main() {
 		log.Fatalf("ERROR: while unmarshaling JSON file - %s", err.Error())
 	}
 
-	err = info.AddYearToDates(2016)
-	if err != nil {
-		log.Fatalf("ERROR: while parsing date field - %s", err.Error())
-	}
-
 	template := "journal/templates/template.md"
 	for _, entry := range info.MissingEntries() {
 		err = entry.NewFromTemplate(template)

@@ -24,24 +24,21 @@ func Unmarshal(jsonPath string) (*Journal, error) {
 		return nil, err
 	}
 
-	entryInfo := &Journal{}
-	err = json.Unmarshal(bytes, &entryInfo)
+	j := &Journal{}
+	err = json.Unmarshal(bytes, &j)
 	if err != nil {
 		return nil, err
 	}
 
-	return entryInfo, nil
-}
-
-func (j *Journal) AddYearToDates(y int) error {
-	for i, entry := range j.Entries {
-		t, err := time.Parse("01-02", entry.DateString)
+	for i, e := range j.Entries {
+		t, err := time.Parse("01-02", e.DateString)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		j.Entries[i].Date = time.Date(y, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
+		j.Entries[i].Date = time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 	}
-	return nil
+
+	return j, nil
 }
 
 func (j *Journal) MissingEntries() []Entry {
