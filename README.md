@@ -13,3 +13,13 @@
 ### 07-03 - 🏝 [Five Islands to Valley View](journal/07-03.md)  🖼
 ### 07-04 - 🖼 [Valley View](journal/07-04.md) 🖼
 ### 07-05 - 🖼 [Valley View](journal/07-05.md) 🖼
+### 07-06 - 🖼  [Valley View to Ellenwood](journal/07-06.md) 🐥
+### 07-07 - 🐥  [Ellenwood](journal/07-07.md) 🐥
+### 07-06 - 🖼  [Valley View to Ellenwood](journal/07-06.md) 🐥
+### 07-07 - 🐥  [Ellenwood](journal/07-07.md) 🐥
+### 07-06 - 🖼  [Valley View to Ellenwood](journal/07-06.md) 🐥
+### 07-07 - 🐥  [Ellenwood](journal/07-07.md) 🐥
+### 07-06 - 🖼  [Valley View to Ellenwood](journal/07-06.md) 🐥
+### 07-07 - 🐥  [Ellenwood](journal/07-07.md) 🐥
+### 07-06 - 🖼  [Valley View to Ellenwood](journal/07-06.md) 🐥
+### 07-07 - 🐥  [Ellenwood](journal/07-07.md) 🐥

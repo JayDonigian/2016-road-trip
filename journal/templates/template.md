@@ -1,4 +1,4 @@
-# `StartEmoji` `Start` to `End` `EndEmoji`
+# `EmojiTitle`
 
 #### [<< Previous Post](`Previous`.md) | [Index](../../README.md) | [Next Post >>](`Next`.md)
 
@@ -14,7 +14,7 @@
 
 **Photos:** [mm/dd Photos](https://jay-d.me/2016RT-mm-dd)
 
-![map from `Start` to `End`](maps/`mm-dd`.png "day map")
+![map from `Title`](maps/`mm-dd`.png "day map")
 
 ##  `EmojiStory`
 

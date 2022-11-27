@@ -14,22 +14,32 @@ func main() {
 		log.Fatalf("ERROR: while parsing arguments - %s", err.Error())
 	}
 
-	info, err := journal.Unmarshal("journal/journal.json")
+	j, err := journal.New("journal/journal.json")
 	if err != nil {
-		log.Fatalf("ERROR: while unmarshaling JSON file - %s", err.Error())
+		log.Fatalf("ERROR: while creating journal - %s", err.Error())
 	}
 
-	err = info.AddYearToDates(2016)
-	if err != nil {
-		log.Fatalf("ERROR: while parsing date field - %s", err.Error())
-	}
-
-	template := "journal/templates/template.md"
-	for _, entry := range info.MissingEntries() {
-		err = entry.NewFromTemplate(template)
+	var lines []string
+	for _, e := range j.MissingEntries() {
+		lines, err = e.ApplyToTemplate("journal/templates/template.md")
 		if err != nil {
 			log.Fatalf("ERROR: while creating from template file - %s", err)
 		}
+
+		err = j.Write(e, lines)
+		if err != nil {
+			log.Fatalf("ERROR: while creating from template file - %s", err)
+		}
+
+		err = j.WriteIndex(e)
+		if err != nil {
+			log.Fatalf("ERROR: while creating from template file - %s", err)
+		}
+	}
+
+	err = j.Save()
+	if err != nil {
+		log.Printf("WARNING: while saving journal - %s", err.Error())
 	}
 }
 
