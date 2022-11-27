@@ -19,14 +19,8 @@ func main() {
 		log.Fatalf("ERROR: while creating journal - %s", err.Error())
 	}
 
-	var lines []string
 	for _, e := range j.MissingEntries() {
-		lines, err = e.ApplyToTemplate("journal/templates/template.md")
-		if err != nil {
-			log.Fatalf("ERROR: while creating from template file - %s", err)
-		}
-
-		err = j.Write(e, lines)
+		err = j.Write(e)
 		if err != nil {
 			log.Fatalf("ERROR: while creating from template file - %s", err)
 		}

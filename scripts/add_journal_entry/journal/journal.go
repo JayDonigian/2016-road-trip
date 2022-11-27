@@ -93,7 +93,7 @@ func (j *Journal) MissingEntries() []*Entry {
 	return missing
 }
 
-func (j *Journal) Write(e *Entry, lines []string) error {
+func (j *Journal) Write(e *Entry) error {
 	destination, err := os.Create(e.EntryFilePath())
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func (j *Journal) Write(e *Entry, lines []string) error {
 	writer := bufio.NewWriter(destination)
 	defer func() { _ = writer.Flush() }()
 
-	for _, line := range lines {
+	for _, line := range e.Write() {
 		_, _ = writer.WriteString(line + "\n")
 	}
 
@@ -126,7 +126,7 @@ func (j *Journal) WriteIndex(e *Entry) error {
 }
 
 func (j *Journal) Save() error {
-	jsonString, _ := json.Marshal(j)
+	jsonString, _ := json.MarshalIndent(j, "", "    ")
 	err := os.WriteFile("journal/journal.json", jsonString, os.ModePerm)
 	if err != nil {
 		return err
