@@ -35,11 +35,11 @@ type Entry struct {
 }
 
 func (e *Entry) EntryFilePath() string {
-	return fmt.Sprintf("journal/%s.md", e.Date.Format("01-02"))
+	return fmt.Sprintf("journal/entries/%s.md", e.Date.Format("01-02"))
 }
 
 func (e *Entry) DailyMapFilePath() string {
-	return fmt.Sprintf("journal/maps/%s.png", e.Date.Format("01-02"))
+	return fmt.Sprintf("journal/maps/day/%s.png", e.Date.Format("01-02"))
 }
 
 func (e *Entry) TotalMapFilePath() string {
@@ -91,7 +91,7 @@ func (e *Entry) addHistory(p *Entry) {
 
 func (e *Entry) Index() string {
 	date := e.Date.Format("01-02")
-	return fmt.Sprintf("### %s - %s  [%s](journal/%s.md) %s", date, e.Start.Emoji, e.Title(), date, e.End.Emoji)
+	return fmt.Sprintf("### %s - %s  [%s](%s) %s", date, e.Start.Emoji, e.Title(), e.EntryFilePath(), e.End.Emoji)
 }
 
 func (e *Entry) PrevName() string {
@@ -133,7 +133,7 @@ func (e *Entry) TripInfo() []string {
 		fmt.Sprintf("**Destination:** %s\n", e.End.Long),
 		fmt.Sprintf("**Distance:** %d miles\n", e.Mileage),
 		fmt.Sprintf("**Photos:** [%s Photos](https://jay-d.me/2016RT-%s)\n", e.Date.Format("01/02"), e.Name),
-		fmt.Sprintf("![map from %s](maps/%s.png \"day map\")\n", e.Title(), e.Name),
+		fmt.Sprintf("![map from %s](%s \"day map\")\n", e.Title(), e.DailyMapFilePath()),
 	}
 }
 
@@ -174,7 +174,7 @@ func (e *Entry) TotalTripStats() []string {
 		"  * Nova Scotia",
 		"* **National Parks**",
 		"  * Acadia\n",
-		fmt.Sprintf("![total trip from Fremont to %s](maps/totals/%s-total.png \"total trip map\")", e.End.Short, e.Name),
+		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")", e.End.Short, e.TotalMapFilePath()),
 	}
 }
 
