@@ -3,7 +3,6 @@ package journal
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -29,7 +28,7 @@ type Entry struct {
 }
 
 func (e *Entry) EntryFilePath() string {
-	return fmt.Sprintf("journal/%s.png", e.Date.Format("01-02"))
+	return fmt.Sprintf("journal/%s.md", e.Date.Format("01-02"))
 }
 
 func (e *Entry) DailyMapFilePath() string {
@@ -37,7 +36,7 @@ func (e *Entry) DailyMapFilePath() string {
 }
 
 func (e *Entry) TotalMapFilePath() string {
-	return fmt.Sprintf("journal/maps/totals/%s.png", e.Date.Format("01-02"))
+	return fmt.Sprintf("journal/maps/totals/%s-total.png", e.Date.Format("01-02"))
 
 }
 
@@ -65,85 +64,7 @@ func (e *Entry) HasTotalMapFile() bool {
 	return true
 }
 
-func (e *Entry) NewFromTemplate(template string) error {
-	lines, err := e.Apply(template)
-	if err != nil {
-		return err
-	}
-
-	err = e.Write(lines)
-	if err != nil {
-		return err
-	}
-
-	err = e.WriteIndex()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (e *Entry) PreviousEntry() (Entry, error) {
-	path := fmt.Sprintf("journal/%s.md", e.Date.AddDate(0, 0, -1).Format("01-02"))
-
-	prevFile, err := os.Stat(path)
-	if err != nil {
-		return Entry{}, err
-	}
-
-	if !prevFile.Mode().IsRegular() {
-		return Entry{}, fmt.Errorf("%s is not a regular file", path)
-	}
-
-	source, err := os.Open(path)
-	if err != nil {
-		return Entry{}, err
-	}
-	defer func() { _ = source.Close() }()
-
-	ei := Entry{Date: e.Date}
-	var lineCount int
-
-	scanner := bufio.NewScanner(source)
-	for scanner.Scan() {
-		line := scanner.Text()
-		lineCount++
-
-		// This mess can be cleaned up by adding logic to Unmarshal previous entries
-		if strings.Contains(line, "* End of day total:") {
-			totalString := strings.Replace(line, "* End of day total: **$", "", 1)
-			totalString = strings.Replace(totalString, "**", "", 2)
-			dailyExpenseTotal, err := strconv.ParseFloat(totalString, 64)
-			if err != nil {
-				return Entry{}, err
-			}
-			ei.BudgetEnd = dailyExpenseTotal
-		}
-
-		if strings.Contains(line, "* **Total Budget Spent:**") {
-			totalString := strings.Split(line, " ")[4]
-			totalString = strings.Replace(totalString, "$", "", 1)
-			runningExpenseTotal, err := strconv.ParseFloat(totalString, 64)
-			if err != nil {
-				return Entry{}, err
-			}
-			ei.RunningExpenseTotal = runningExpenseTotal
-		}
-
-		if strings.Contains(line, "* **Total Distance:**") {
-			mileage, _ := strconv.Atoi(strings.Split(line, " ")[3])
-			ei.RunningMileageTotal = mileage
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return Entry{}, err
-	}
-	return ei, nil
-}
-
-func (e *Entry) Apply(template string) ([]string, error) {
+func (e *Entry) ApplyToTemplate(template string) ([]string, error) {
 	prevDay := e.Date.AddDate(0, 0, -1)
 	nextDay := e.Date.AddDate(0, 0, 1)
 
@@ -183,38 +104,6 @@ func (e *Entry) Apply(template string) ([]string, error) {
 	}
 
 	return lines, nil
-}
-
-func (e *Entry) Write(lines []string) error {
-	destination, err := os.Create("journal/" + e.Date.Format("01-02") + ".md")
-	if err != nil {
-		return err
-	}
-	defer func() { _ = destination.Close() }()
-
-	writer := bufio.NewWriter(destination)
-	defer func() { _ = writer.Flush() }()
-
-	for _, line := range lines {
-		_, _ = writer.WriteString(line + "\n")
-	}
-
-	return nil
-}
-
-func (e *Entry) WriteIndex() error {
-	f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Println(err)
-	}
-	defer func() { _ = f.Close() }()
-
-	_, err = f.WriteString(fmt.Sprintf("%s\n", e.Index()))
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (e *Entry) Index() string {
