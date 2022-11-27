@@ -31,8 +31,10 @@ func New(jsonPath string) (*Journal, error) {
 		}
 		j.Entries[i].Date = time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 
-		for _, expense := range e.DailyExpenses {
-			e.DailyExpenseTotal += expense.Cost
+		if e.DailyExpenseTotal == 0 {
+			for _, expense := range e.DailyExpenses {
+				e.DailyExpenseTotal += expense.Cost
+			}
 		}
 
 		previous, err = j.previousEntry(e)
@@ -120,5 +122,14 @@ func (j *Journal) WriteIndex(e *Entry) error {
 		return err
 	}
 
+	return nil
+}
+
+func (j *Journal) Save() error {
+	jsonString, _ := json.Marshal(j)
+	err := os.WriteFile("journal/journal.json", jsonString, os.ModePerm)
+	if err != nil {
+		return err
+	}
 	return nil
 }

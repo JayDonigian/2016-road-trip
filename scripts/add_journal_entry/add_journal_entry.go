@@ -16,14 +16,12 @@ func main() {
 
 	j, err := journal.New("journal/journal.json")
 	if err != nil {
-		log.Fatalf("ERROR: while unmarshaling JSON file - %s", err.Error())
+		log.Fatalf("ERROR: while creating journal - %s", err.Error())
 	}
-
-	template := "journal/templates/template.md"
 
 	var lines []string
 	for _, e := range j.MissingEntries() {
-		lines, err = e.ApplyToTemplate(template)
+		lines, err = e.ApplyToTemplate("journal/templates/template.md")
 		if err != nil {
 			log.Fatalf("ERROR: while creating from template file - %s", err)
 		}
@@ -37,6 +35,11 @@ func main() {
 		if err != nil {
 			log.Fatalf("ERROR: while creating from template file - %s", err)
 		}
+	}
+
+	err = j.Save()
+	if err != nil {
+		log.Printf("WARNING: while saving journal - %s", err.Error())
 	}
 }
 

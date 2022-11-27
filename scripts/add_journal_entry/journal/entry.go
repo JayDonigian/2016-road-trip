@@ -21,15 +21,17 @@ type Expense struct {
 }
 
 type Entry struct {
-	Date                time.Time `json:"time"`
-	RunningMileageTotal int
-	RunningExpenseTotal float64
-	DailyExpenseTotal   float64
-	BudgetStart         float64
-	BudgetEnd           float64
+	Name string    `json:"name"`
+	Date time.Time `json:"date"`
 
-	Mileage       int       `json:"mileage"`
-	Name          string    `json:"date"`
+	Mileage             int `json:"mileage"`
+	RunningMileageTotal int `json:"running_mileage_total"`
+
+	BudgetStart         float64 `json:"budget_start"`
+	DailyExpenseTotal   float64 `json:"daily_expense_total"`
+	BudgetEnd           float64 `json:"budget_end"`
+	RunningExpenseTotal float64 `json:"running_expense_total"`
+
 	Start         Location  `json:"start"`
 	End           Location  `json:"end"`
 	DailyExpenses []Expense `json:"expenses"`
