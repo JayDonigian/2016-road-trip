@@ -43,7 +43,16 @@ func (e *Entry) DailyMapFilePath() string {
 }
 
 func (e *Entry) TotalMapFilePath() string {
-	return fmt.Sprintf("journal/maps/totals/%s-total.png", e.Date.Format("01-02"))
+	return fmt.Sprintf("journal/maps/total/%s-total.png", e.Date.Format("01-02"))
+
+}
+
+func (e *Entry) RelativeDailyMapFilePath() string {
+	return fmt.Sprintf("../maps/day/%s.png", e.Date.Format("01-02"))
+}
+
+func (e *Entry) RelativeTotalMapFilePath() string {
+	return fmt.Sprintf("../maps/total/%s-total.png", e.Date.Format("01-02"))
 
 }
 
@@ -133,7 +142,7 @@ func (e *Entry) TripInfo() []string {
 		fmt.Sprintf("**Destination:** %s\n", e.End.Long),
 		fmt.Sprintf("**Distance:** %d miles\n", e.Mileage),
 		fmt.Sprintf("**Photos:** [%s Photos](https://jay-d.me/2016RT-%s)\n", e.Date.Format("01/02"), e.Name),
-		fmt.Sprintf("![map from %s](%s \"day map\")\n", e.Title(), e.DailyMapFilePath()),
+		fmt.Sprintf("![map from %s](%s \"day map\")\n", e.Title(), e.RelativeDailyMapFilePath()),
 	}
 }
 
@@ -174,7 +183,7 @@ func (e *Entry) TotalTripStats() []string {
 		"  * Nova Scotia",
 		"* **National Parks**",
 		"  * Acadia\n",
-		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")", e.End.Short, e.TotalMapFilePath()),
+		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")", e.End.Short, e.RelativeTotalMapFilePath()),
 	}
 }
 
