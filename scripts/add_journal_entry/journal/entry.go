@@ -1,11 +1,8 @@
 package journal
 
 import (
-	"bufio"
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -92,50 +89,17 @@ func (e *Entry) addHistory(p *Entry) {
 	e.RunningExpenseTotal = e.DailyExpenseTotal + prevExpense
 }
 
-func (e *Entry) ApplyToTemplate(template string) ([]string, error) {
-	prevDay := e.Date.AddDate(0, 0, -1)
-	nextDay := e.Date.AddDate(0, 0, 1)
-
-	var expensesReplacements string
-	for _, exp := range e.DailyExpenses {
-		expensesReplacements += fmt.Sprintf("  * $%.2f - %s\n", exp.Cost, exp.Item)
-	}
-
-	replacements := []replacement{
-		{find: "`EmojiTitle`", replace: e.TitleWithEmoji()},
-		{find: "`Previous`", replace: prevDay.Format("01-02")},
-		{find: "`Next`", replace: nextDay.Format("01-02")},
-		{find: "`Date`", replace: e.Date.Format("Monday, January 02, 2006")},
-		{find: "mm/dd", replace: e.Date.Format("01/02")},
-		{find: "`mm-dd`", replace: e.Date.Format("01-02")},
-		{find: "mm-dd", replace: e.Date.Format("01-02")},
-		{find: "`StartLong`", replace: e.Start.Long},
-		{find: "`EndLong`", replace: e.End.Long},
-		{find: "`PreviousSpend`", replace: fmt.Sprintf("%.2f", e.BudgetStart-60)},
-		{find: "`Mileage`", replace: strconv.Itoa(e.Mileage)},
-		{find: "`Expenses`", replace: fmt.Sprintf("%.2f", e.DailyExpenseTotal)},
-		{find: "`ExpenseTotal`", replace: fmt.Sprintf("%.2f", e.BudgetEnd)},
-		{find: "`TotalSpend`", replace: fmt.Sprintf("%.2f", e.RunningExpenseTotal)},
-		{find: "`TotalMileage`", replace: strconv.Itoa(e.RunningMileageTotal)},
-		{find: "`EXPENSES`", replace: expensesReplacements},
-	}
-	if e.Start.Short == e.End.Short {
-		replacements = append(replacements, replacement{find: "`Start` to `End`", replace: e.Start.Short})
-	}
-	replacements = append(replacements, replacement{find: "`Start`", replace: e.Start.Short})
-	replacements = append(replacements, replacement{find: "`End`", replace: e.End.Short})
-
-	lines, err := apply(template, replacements)
-	if err != nil {
-		return nil, err
-	}
-
-	return lines, nil
-}
-
 func (e *Entry) Index() string {
 	date := e.Date.Format("01-02")
 	return fmt.Sprintf("### %s - %s  [%s](journal/%s.md) %s", date, e.Start.Emoji, e.Title(), date, e.End.Emoji)
+}
+
+func (e *Entry) PrevName() string {
+	return e.Date.AddDate(0, 0, -1).Format("01-02")
+}
+
+func (e *Entry) NextName() string {
+	return e.Date.AddDate(0, 0, 1).Format("01-02")
 }
 
 func (e *Entry) Title() string {
@@ -152,47 +116,92 @@ func (e *Entry) TitleWithEmoji() string {
 	return fmt.Sprintf("%s  %s to %s %s", e.Start.Emoji, e.Start.Short, e.End.Short, e.End.Emoji)
 }
 
-type replacement struct {
-	find, replace string
+func (e *Entry) TitleSection() string {
+	return fmt.Sprintf("# %s", e.TitleWithEmoji())
 }
 
-// TODO: This has nested for-loops, optimize it if you can.
-func apply(templatePath string, replacements []replacement) ([]string, error) {
-	sourceFileStat, err := os.Stat(templatePath)
-	if err != nil {
-		return nil, err
-	}
-
-	if !sourceFileStat.Mode().IsRegular() {
-		return nil, fmt.Errorf("%s is not a regular file", templatePath)
-	}
-
-	source, err := os.Open(templatePath)
-	if err != nil {
-		return nil, err
-	}
-	defer func() { _ = source.Close() }()
-
-	var lines []string
-	scanner := bufio.NewScanner(source)
-	for scanner.Scan() {
-		line := scanner.Text()
-		line = findAndReplace(line, replacements)
-		lines = append(lines, line)
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return lines, nil
+func (e *Entry) PrevNextLinks() string {
+	format := "#### [<< Previous Post](%s.md) | [Index](../../README.md) | [Next Post >>](%s.md)\n"
+	return fmt.Sprintf(format, e.PrevName(), e.NextName())
 }
 
-func findAndReplace(s string, reps []replacement) string {
-	for _, rep := range reps {
-		if strings.Contains(s, rep.find) {
-			s = strings.Replace(s, rep.find, rep.replace, -1)
-		}
+func (e *Entry) TripInfo() []string {
+	return []string{
+		"## Today's Trip\n",
+		fmt.Sprintf("**Date:** %s\n", e.Date.Format("Monday, January 02, 2006")),
+		fmt.Sprintf("**Starting Point:** %s\n", e.Start.Long),
+		fmt.Sprintf("**Destination:** %s\n", e.End.Long),
+		fmt.Sprintf("**Distance:** %d miles\n", e.Mileage),
+		fmt.Sprintf("**Photos:** [%s Photos](https://jay-d.me/2016RT-%s)\n", e.Date.Format("01/02"), e.Name),
+		fmt.Sprintf("![map from %s](maps/%s.png \"day map\")\n", e.Title(), e.Name),
 	}
-	return s
+}
+
+func (e *Entry) EmojiStory() string {
+	return "##  `EmojiStory`\n"
+}
+
+func (e *Entry) JournalEntry() []string {
+	return []string{
+		"## Journal Entry",
+		"* `Journal Entry`\n",
+	}
+}
+
+func (e *Entry) Budget() []string {
+	lines := []string{
+		"## The Budget",
+		fmt.Sprintf("* $%.2f from previous day", e.BudgetStart-60),
+		"* $60.00 daily addition",
+		fmt.Sprintf("* $%.2f expenses", e.DailyExpenseTotal),
+	}
+	for _, ex := range e.DailyExpenses {
+		lines = append(lines, fmt.Sprintf("  * $%.2f\t%s", ex.Cost, ex.Item))
+	}
+	lines = append(lines, fmt.Sprintf("* End of day total: **$%.2f**\n", e.BudgetEnd))
+	return lines
+}
+
+func (e *Entry) TotalTripStats() []string {
+	return []string{
+		"## Trip Statistics",
+		fmt.Sprintf("* **Total Distance:** %d miles", e.RunningMileageTotal),
+		fmt.Sprintf("* **Total Budget Spent:** $%.2f", e.RunningExpenseTotal),
+		"* **U.S. States**",
+		"  * New Hampshire",
+		"  * Maine",
+		"* **Canadian Provinces**",
+		"  * Nova Scotia",
+		"* **National Parks**",
+		"  * Acadia\n",
+		fmt.Sprintf("![total trip from Fremont to %s](maps/totals/%s-total.png \"total trip map\")", e.End.Short, e.Name),
+	}
+}
+
+func (e *Entry) Write() []string {
+	lines := []string{e.TitleSection()}
+
+	lines = append(lines, e.PrevNextLinks())
+
+	for _, l := range e.TripInfo() {
+		lines = append(lines, l)
+	}
+
+	lines = append(lines, e.EmojiStory())
+
+	for _, l := range e.JournalEntry() {
+		lines = append(lines, l)
+	}
+
+	for _, l := range e.Budget() {
+		lines = append(lines, l)
+	}
+
+	for _, l := range e.TotalTripStats() {
+		lines = append(lines, l)
+	}
+
+	lines = append(lines, e.PrevNextLinks())
+
+	return lines
 }
