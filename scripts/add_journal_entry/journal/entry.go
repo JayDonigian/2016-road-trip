@@ -102,14 +102,13 @@ func (e *Entry) ApplyToTemplate(template string) ([]string, error) {
 	}
 
 	replacements := []replacement{
-		{find: "`StartEmoji`", replace: e.Start.Emoji},
-		{find: "`EndEmoji`", replace: e.End.Emoji},
+		{find: "`EmojiTitle`", replace: e.TitleWithEmoji()},
 		{find: "`Previous`", replace: prevDay.Format("01-02")},
 		{find: "`Next`", replace: nextDay.Format("01-02")},
+		{find: "`Date`", replace: e.Date.Format("Monday, January 02, 2006")},
 		{find: "mm/dd", replace: e.Date.Format("01/02")},
 		{find: "`mm-dd`", replace: e.Date.Format("01-02")},
 		{find: "mm-dd", replace: e.Date.Format("01-02")},
-		{find: "`Date`", replace: e.Date.Format("Monday, January 02") + ", 2016"},
 		{find: "`StartLong`", replace: e.Start.Long},
 		{find: "`EndLong`", replace: e.End.Long},
 		{find: "`PreviousSpend`", replace: fmt.Sprintf("%.2f", e.BudgetStart-60)},
@@ -141,9 +140,16 @@ func (e *Entry) Index() string {
 
 func (e *Entry) Title() string {
 	if e.Start.Short == e.End.Short {
-		return e.Start.Short
+		return fmt.Sprintf("%s", e.Start.Short)
 	}
 	return fmt.Sprintf("%s to %s", e.Start.Short, e.End.Short)
+}
+
+func (e *Entry) TitleWithEmoji() string {
+	if e.Start.Short == e.End.Short {
+		return fmt.Sprintf("%s  %s %s", e.Start.Emoji, e.Start.Short, e.Start.Emoji)
+	}
+	return fmt.Sprintf("%s  %s to %s %s", e.Start.Emoji, e.Start.Short, e.End.Short, e.End.Emoji)
 }
 
 type replacement struct {
