@@ -12,66 +12,71 @@ import (
 )
 
 type Journal struct {
-	Entries []Entry `json:"entries"`
+	Entries []*Entry `json:"entries"`
 }
 
-func Unmarshal(jsonPath string) (*Journal, error) {
-	jsonFile, err := os.Open(jsonPath)
-	if err != nil {
-		return nil, err
-	}
-	defer func() { _ = jsonFile.Close() }()
-
-	bytes, err := io.ReadAll(jsonFile)
-	if err != nil {
-		return nil, err
-	}
-
+func New(jsonPath string) (*Journal, error) {
 	j := &Journal{}
-	err = json.Unmarshal(bytes, &j)
+	err := j.unmarshal(jsonPath)
 	if err != nil {
 		return nil, err
 	}
 
-	var previous Entry
+	var previous *Entry
 	var t time.Time
 	for i, e := range j.Entries {
-		t, err = time.Parse("01-02", e.DateString)
+		t, err = time.Parse("01-02", e.Name)
 		if err != nil {
 			return nil, err
 		}
 		j.Entries[i].Date = time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 
-		previous, err = j.PreviousEntry(e)
-		if err != nil {
-			log.Printf("WARNING: Unable to find previous entry for %s", e.DateString)
-		}
-
 		for _, expense := range e.DailyExpenses {
 			e.DailyExpenseTotal += expense.Cost
 		}
 
-		e.BudgetStart = previous.BudgetEnd + 60
-		e.BudgetEnd = previous.BudgetEnd + 60 - e.DailyExpenseTotal
-		e.RunningExpenseTotal = e.DailyExpenseTotal + previous.RunningExpenseTotal
-		e.RunningMileageTotal = e.Mileage + previous.RunningMileageTotal
+		previous, err = j.previousEntry(e)
+		if err != nil {
+			log.Printf("WARNING: Unable to find previous entry for %s", e.Name)
+		}
+
+		e.addHistory(previous)
 	}
 
 	return j, nil
 }
 
-func (j *Journal) PreviousEntry(entry Entry) (Entry, error) {
+func (j *Journal) unmarshal(jsonPath string) error {
+	jsonFile, err := os.Open(jsonPath)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = jsonFile.Close() }()
+
+	bytes, err := io.ReadAll(jsonFile)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(bytes, &j)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (j *Journal) previousEntry(entry *Entry) (*Entry, error) {
 	p := entry.Date.AddDate(0, 0, -1)
 	for _, e := range j.Entries {
 		if e.Date == p {
 			return e, nil
 		}
 	}
-	return Entry{}, errors.New("unable to find a previous entry")
+	return nil, errors.New("unable to find a previous entry")
 }
 
-func (j *Journal) MissingEntries() []Entry {
-	var missing []Entry
+func (j *Journal) MissingEntries() []*Entry {
+	var missing []*Entry
 	for _, e := range j.Entries {
 		if !e.HasDailyMapFile() {
 			log.Printf("WARNING: map for %s does not exist\n", e.DailyMapFilePath())
@@ -86,7 +91,7 @@ func (j *Journal) MissingEntries() []Entry {
 	return missing
 }
 
-func (j *Journal) Write(e Entry, lines []string) error {
+func (j *Journal) Write(e *Entry, lines []string) error {
 	destination, err := os.Create(e.EntryFilePath())
 	if err != nil {
 		return err
@@ -103,7 +108,7 @@ func (j *Journal) Write(e Entry, lines []string) error {
 	return nil
 }
 
-func (j *Journal) WriteIndex(e Entry) error {
+func (j *Journal) WriteIndex(e *Entry) error {
 	f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Println(err)

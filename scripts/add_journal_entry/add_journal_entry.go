@@ -14,7 +14,7 @@ func main() {
 		log.Fatalf("ERROR: while parsing arguments - %s", err.Error())
 	}
 
-	j, err := journal.Unmarshal("journal/journal.json")
+	j, err := journal.New("journal/journal.json")
 	if err != nil {
 		log.Fatalf("ERROR: while unmarshaling JSON file - %s", err.Error())
 	}

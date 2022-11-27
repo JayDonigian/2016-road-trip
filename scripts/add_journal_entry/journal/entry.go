@@ -9,22 +9,30 @@ import (
 	"time"
 )
 
+type Location struct {
+	Emoji string `json:"emoji"`
+	Short string `json:"short"`
+	Long  string `json:"long"`
+}
+
+type Expense struct {
+	Item string  `json:"item"`
+	Cost float64 `json:"cost"`
+}
+
 type Entry struct {
-	Date                time.Time
+	Date                time.Time `json:"time"`
 	RunningMileageTotal int
 	RunningExpenseTotal float64
 	DailyExpenseTotal   float64
 	BudgetStart         float64
 	BudgetEnd           float64
 
-	Mileage       int      `json:"mileage"`
-	DateString    string   `json:"date"`
-	Start         Location `json:"start"`
-	End           Location `json:"end"`
-	DailyExpenses []struct {
-		Item string  `json:"item"`
-		Cost float64 `json:"cost"`
-	} `json:"expenses"`
+	Mileage       int       `json:"mileage"`
+	Name          string    `json:"date"`
+	Start         Location  `json:"start"`
+	End           Location  `json:"end"`
+	DailyExpenses []Expense `json:"expenses"`
 }
 
 func (e *Entry) EntryFilePath() string {
@@ -62,6 +70,24 @@ func (e *Entry) HasTotalMapFile() bool {
 		return false
 	}
 	return true
+}
+
+func (e *Entry) addHistory(p *Entry) {
+	var prevMileage int
+	var prevEnd, prevExpense float64
+
+	if p == nil {
+		e.BudgetStart = 60
+	} else {
+		prevMileage = p.RunningMileageTotal
+		prevEnd = p.BudgetEnd
+		prevExpense = p.RunningExpenseTotal
+	}
+
+	e.BudgetStart = prevEnd + 60.00
+	e.BudgetEnd = prevEnd + 60.00 - e.DailyExpenseTotal
+	e.RunningMileageTotal = e.Mileage + prevMileage
+	e.RunningExpenseTotal = e.DailyExpenseTotal + prevExpense
 }
 
 func (e *Entry) ApplyToTemplate(template string) ([]string, error) {
