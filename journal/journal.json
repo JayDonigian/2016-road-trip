@@ -376,6 +376,32 @@
                     "cost": 2.5
                 }
             ]
+        },
+        {
+            "name": "07-07",
+            "date": "2016-07-07T00:00:00Z",
+            "mileage": 41,
+            "running_mileage_total": 1460,
+            "budget_start": -19,
+            "daily_expense_total": 27,
+            "budget_end": -46,
+            "running_expense_total": 766,
+            "start": {
+                "emoji": "🐥",
+                "short": "Ellenwood Lake",
+                "long": "Ellenwood Lake Provincial Park, Yarmouth, Nova Scotia, Canada"
+            },
+            "end": {
+                "emoji": "🐥",
+                "short": "Ellenwood Lake",
+                "long": "Ellenwood Lake Provincial Park, Yarmouth, Nova Scotia, Canada"
+            },
+            "expenses": [
+                {
+                    "item": "Campsite",
+                    "cost": 27
+                }
+            ]
         }
     ]
 }
