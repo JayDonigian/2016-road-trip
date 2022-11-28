@@ -383,9 +383,9 @@
             "mileage": 41,
             "running_mileage_total": 1460,
             "budget_start": -19,
-            "daily_expense_total": 27,
-            "budget_end": -46,
-            "running_expense_total": 766,
+            "daily_expense_total": -58.18000000000001,
+            "budget_end": 39.18000000000001,
+            "running_expense_total": 680.8199999999999,
             "start": {
                 "emoji": "🐥",
                 "short": "Ellenwood Lake",
@@ -400,6 +400,56 @@
                 {
                     "item": "Campsite",
                     "cost": 27
+                },
+                {
+                    "item": "Budget Audit",
+                    "cost": -85.18
+                }
+            ]
+        },
+        {
+            "name": "07-08",
+            "date": "2016-07-08T00:00:00Z",
+            "mileage": 251,
+            "running_mileage_total": 1711,
+            "budget_start": 99.18,
+            "daily_expense_total": 76.03,
+            "budget_end": 23.150000000000006,
+            "running_expense_total": 756.8499999999999,
+            "start": {
+                "emoji": "🐥",
+                "short": "Ellenwood Lake",
+                "long": "Ellenwood Lake Provincial Park, Yarmouth, Nova Scotia, Canada"
+            },
+            "end": {
+                "emoji": "🐿",
+                "short": "Laurie",
+                "long": "Laurie Provincial Park, Grand Lake, Nova Scotia, Canada"
+            },
+            "expenses": [
+                {
+                    "item": "Whiskey \u0026 Tall Boy",
+                    "cost": 32
+                },
+                {
+                    "item": "Campsite",
+                    "cost": 26.7
+                },
+                {
+                    "item": "Pizza",
+                    "cost": 19
+                },
+                {
+                    "item": "Ice \u0026 Wood",
+                    "cost": 10
+                },
+                {
+                    "item": "Hot Water Bottle",
+                    "cost": 8
+                },
+                {
+                    "item": "Budget Audit",
+                    "cost": -19.67
                 }
             ]
         }
