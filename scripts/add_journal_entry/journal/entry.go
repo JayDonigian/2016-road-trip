@@ -130,7 +130,7 @@ func (e *Entry) TitleSection() []string {
 }
 
 func (e *Entry) PrevNextLinks() []string {
-	format := "#### [<< Previous Post](%s.md) | [Index](../../README.md) | [Next Post >>](%s.md)\n"
+	format := "#### [<< Previous Post](https://jay-d.me/2016RT-%s) | [Index](../../README.md) | [Next Post >>](https://jay-d.me/2016RT-%s)\n"
 	return []string{fmt.Sprintf(format, e.PrevName(), e.NextName())}
 }
 
@@ -141,7 +141,7 @@ func (e *Entry) TripInfo() []string {
 		fmt.Sprintf("**Starting Point:** %s\n", e.Start.Long),
 		fmt.Sprintf("**Destination:** %s\n", e.End.Long),
 		fmt.Sprintf("**Distance:** %d miles\n", e.Mileage),
-		fmt.Sprintf("**Photos:** [%s Photos](https://jay-d.me/2016RT-%s)\n", e.Date.Format("01/02"), e.Name),
+		fmt.Sprintf("**Photos:** [%s Photos](https://jay-d.me/2016RT-%s-photos)\n", e.Date.Format("01/02"), e.Name),
 		fmt.Sprintf("![map from %s](%s \"day map\")\n", e.Title(), e.RelativeDailyMapFilePath()),
 	}
 }
