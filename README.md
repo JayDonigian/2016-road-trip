@@ -19,6 +19,3 @@
 ### 07-06 - 🖼  [Valley View to Ellenwood Lake](journal/entries/07-06.md) 🐥
 ### 07-06 - 🖼  [Valley View to Ellenwood Lake](journal/entries/07-06.md) 🐥
 ### 07-07 - 🐥  [Ellenwood Lake](journal/entries/07-07.md) 🐥
-### 07-07 - 🐥  [Ellenwood Lake](journal/entries/07-07.md) 🐥
-### 07-07 - 🐥  [Ellenwood Lake](journal/entries/07-07.md) 🐥
-### 07-07 - 🐥  [Ellenwood Lake](journal/entries/07-07.md) 🐥
