@@ -125,13 +125,13 @@ func (e *Entry) TitleWithEmoji() string {
 	return fmt.Sprintf("%s  %s to %s %s", e.Start.Emoji, e.Start.Short, e.End.Short, e.End.Emoji)
 }
 
-func (e *Entry) TitleSection() string {
-	return fmt.Sprintf("# %s", e.TitleWithEmoji())
+func (e *Entry) TitleSection() []string {
+	return []string{fmt.Sprintf("# %s\n", e.TitleWithEmoji())}
 }
 
-func (e *Entry) PrevNextLinks() string {
+func (e *Entry) PrevNextLinks() []string {
 	format := "#### [<< Previous Post](%s.md) | [Index](../../README.md) | [Next Post >>](%s.md)\n"
-	return fmt.Sprintf(format, e.PrevName(), e.NextName())
+	return []string{fmt.Sprintf(format, e.PrevName(), e.NextName())}
 }
 
 func (e *Entry) TripInfo() []string {
@@ -146,20 +146,20 @@ func (e *Entry) TripInfo() []string {
 	}
 }
 
-func (e *Entry) EmojiStory() string {
-	return "##  `EmojiStory`\n"
+func (e *Entry) EmojiStory() []string {
+	return []string{"##  `EmojiStory`\n"}
 }
 
 func (e *Entry) JournalEntry() []string {
 	return []string{
-		"## Journal Entry",
+		"## Journal Entry\n",
 		"* `Journal Entry`\n",
 	}
 }
 
 func (e *Entry) Budget() []string {
 	lines := []string{
-		"## The Budget",
+		"## The Budget\n",
 		fmt.Sprintf("* $%.2f from previous day", e.BudgetStart-60),
 		"* $60.00 daily addition",
 		fmt.Sprintf("* $%.2f expenses", e.DailyExpenseTotal),
@@ -173,7 +173,7 @@ func (e *Entry) Budget() []string {
 
 func (e *Entry) TotalTripStats() []string {
 	return []string{
-		"## Trip Statistics",
+		"## Trip Statistics\n",
 		fmt.Sprintf("* **Total Distance:** %d miles", e.RunningMileageTotal),
 		fmt.Sprintf("* **Total Budget Spent:** $%.2f", e.RunningExpenseTotal),
 		"* **U.S. States**",
@@ -183,34 +183,28 @@ func (e *Entry) TotalTripStats() []string {
 		"  * Nova Scotia",
 		"* **National Parks**",
 		"  * Acadia\n",
-		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")", e.End.Short, e.RelativeTotalMapFilePath()),
+		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")\n", e.End.Short, e.RelativeTotalMapFilePath()),
 	}
 }
 
 func (e *Entry) Write() []string {
-	lines := []string{e.TitleSection()}
-
-	lines = append(lines, e.PrevNextLinks())
-
-	for _, l := range e.TripInfo() {
-		lines = append(lines, l)
+	sections := [][]string{
+		e.TitleSection(),
+		e.PrevNextLinks(),
+		e.TripInfo(),
+		e.EmojiStory(),
+		e.JournalEntry(),
+		e.Budget(),
+		e.TotalTripStats(),
+		e.PrevNextLinks(),
 	}
 
-	lines = append(lines, e.EmojiStory())
-
-	for _, l := range e.JournalEntry() {
-		lines = append(lines, l)
+	var lines []string
+	for _, s := range sections {
+		for _, l := range s {
+			lines = append(lines, l)
+		}
 	}
-
-	for _, l := range e.Budget() {
-		lines = append(lines, l)
-	}
-
-	for _, l := range e.TotalTripStats() {
-		lines = append(lines, l)
-	}
-
-	lines = append(lines, e.PrevNextLinks())
 
 	return lines
 }
