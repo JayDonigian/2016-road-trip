@@ -100,7 +100,7 @@ func (e *Entry) addHistory(p *Entry) {
 
 func (e *Entry) Index() string {
 	date := e.Date.Format("01-02")
-	return fmt.Sprintf("### %s - %s  [%s](%s) %s", date, e.Start.Emoji, e.Title(), e.EntryFilePath(), e.End.Emoji)
+	return fmt.Sprintf("### %s - %s  [%s](https://jay-d.me/2016RT-%s) %s", date, e.Start.Emoji, e.Title(), e.Name, e.End.Emoji)
 }
 
 func (e *Entry) PrevName() string {

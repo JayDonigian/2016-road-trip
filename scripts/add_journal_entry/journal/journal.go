@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -111,15 +112,33 @@ func (j *Journal) Write(e *Entry) error {
 }
 
 func (j *Journal) WriteIndex(e *Entry) error {
-	f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.Open("README.md")
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
-	defer func() { _ = f.Close() }()
+	defer func() { _ = file.Close() }()
 
-	_, err = f.WriteString(fmt.Sprintf("%s\n", e.Index()))
-	if err != nil {
-		return err
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	if !strings.Contains(lines[len(lines)-1], e.Name) {
+		f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Println(err)
+		}
+		defer func() { _ = f.Close() }()
+
+		_, err = f.WriteString(fmt.Sprintf("%s\n", e.Index()))
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
