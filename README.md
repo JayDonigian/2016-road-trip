@@ -16,3 +16,5 @@
 ### 07-06 - 🖼 [Valley View to Ellenwood](https://jay-d.me/2016RT-07-06) 🐥
 ### 07-07 - 🐥  [Ellenwood Lake](https://jay-d.me/2016RT-07-07) 🐥
 ### 07-08 - 🐥  [Ellenwood Lake to Laurie](https://jay-d.me/2016RT-07-08) 🐿
+### 07-09 - 🐿  [Laurie](https://jay-d.me/2016RT-07-09) 🐿
+### 07-10 - 🐿  [Laurie](https://jay-d.me/2016RT-07-10) 🐿
