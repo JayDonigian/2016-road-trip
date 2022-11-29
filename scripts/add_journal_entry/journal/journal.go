@@ -13,7 +13,8 @@ import (
 )
 
 type Journal struct {
-	Entries []*Entry `json:"entries"`
+	Entries   []*Entry `json:"entries"`
+	IndexPath string
 }
 
 func New(jsonPath string) (*Journal, error) {
@@ -22,6 +23,8 @@ func New(jsonPath string) (*Journal, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	j.IndexPath = "README.md"
 
 	var previous *Entry
 	var t time.Time
@@ -112,33 +115,26 @@ func (j *Journal) Write(e *Entry) error {
 }
 
 func (j *Journal) WriteIndex(e *Entry) error {
-	file, err := os.Open("README.md")
+	file, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	defer func() { _ = file.Close() }()
 
-	var lines []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+		if strings.Contains(scanner.Text(), e.Name) {
+			return nil
+		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	if err = scanner.Err(); err != nil {
+		return err
 	}
 
-	if !strings.Contains(lines[len(lines)-1], e.Name) {
-		f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Println(err)
-		}
-		defer func() { _ = f.Close() }()
-
-		_, err = f.WriteString(fmt.Sprintf("%s\n", e.Index()))
-		if err != nil {
-			return err
-		}
+	_, err = file.WriteString(fmt.Sprintf("%s\n", e.Index()))
+	if err != nil {
+		return err
 	}
 
 	return nil
