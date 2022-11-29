@@ -452,6 +452,86 @@
                     "cost": -19.67
                 }
             ]
+        },
+        {
+            "name": "07-09",
+            "date": "2016-07-09T00:00:00Z",
+            "mileage": 52,
+            "running_mileage_total": 1763,
+            "budget_start": 83.15,
+            "daily_expense_total": 125.95,
+            "budget_end": -42.8,
+            "running_expense_total": 882.8,
+            "start": {
+                "emoji": "🐿",
+                "short": "Laurie",
+                "long": "Laurie Provincial Park, Grand Lake, Nova Scotia, Canada"
+            },
+            "end": {
+                "emoji": "🐿",
+                "short": "Laurie",
+                "long": "Laurie Provincial Park, Grand Lake, Nova Scotia, Canada"
+            },
+            "expenses": [
+                {
+                    "item": "Groceries",
+                    "cost": 51
+                },
+                {
+                    "item": "Pub - Beer \u0026 Nachos",
+                    "cost": 45
+                },
+                {
+                    "item": "Campsite",
+                    "cost": 26.7
+                },
+                {
+                    "item": "NS Flag Sticker",
+                    "cost": 3.25
+                }
+            ]
+        },
+        {
+            "name": "07-10",
+            "date": "2016-07-10T00:00:00Z",
+            "mileage": 83,
+            "running_mileage_total": 1846,
+            "budget_start": 17.200000000000003,
+            "daily_expense_total": 77.4,
+            "budget_end": -60.2,
+            "running_expense_total": 960.1999999999999,
+            "start": {
+                "emoji": "🐿",
+                "short": "Laurie",
+                "long": "Laurie Provincial Park, Grand Lake, Nova Scotia, Canada"
+            },
+            "end": {
+                "emoji": "🐿",
+                "short": "Laurie",
+                "long": "Laurie Provincial Park, Grand Lake, Nova Scotia, Canada"
+            },
+            "expenses": [
+                {
+                    "item": "Campsite",
+                    "cost": 26.7
+                },
+                {
+                    "item": "Mussels \u0026 Beer",
+                    "cost": 22
+                },
+                {
+                    "item": "Beet Cider Growler",
+                    "cost": 19
+                },
+                {
+                    "item": "Laundry",
+                    "cost": 8
+                },
+                {
+                    "item": "Coffee Crisp",
+                    "cost": 1.7
+                }
+            ]
         }
     ]
 }
