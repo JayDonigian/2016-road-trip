@@ -14,7 +14,7 @@ import (
 
 type Journal struct {
 	Entries   []*Entry `json:"entries"`
-	IndexPath string
+	indexPath string
 }
 
 func New(jsonPath string) (*Journal, error) {
@@ -24,7 +24,7 @@ func New(jsonPath string) (*Journal, error) {
 		return nil, err
 	}
 
-	j.IndexPath = "README.md"
+	j.indexPath = "README.md"
 
 	var previous *Entry
 	var t time.Time

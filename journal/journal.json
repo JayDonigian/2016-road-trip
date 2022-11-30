@@ -532,6 +532,48 @@
                     "cost": 1.7
                 }
             ]
+        },
+        {
+            "name": "07-11",
+            "date": "2016-07-11T00:00:00Z",
+            "mileage": 186,
+            "running_mileage_total": 2032,
+            "budget_start": -0.20000000000000284,
+            "daily_expense_total": 68.71,
+            "budget_end": -68.91,
+            "running_expense_total": 1028.9099999999999,
+            "start": {
+                "emoji": "🐿",
+                "short": "Laurie",
+                "long": "Laurie Provincial Park, Grand Lake, Nova Scotia, Canada"
+            },
+            "end": {
+                "emoji": "🗿",
+                "short": "Whycocomagh",
+                "long": "Whycocomagh Provincial Park, Whycocomagh, Nova Scotia, Canada"
+            },
+            "expenses": [
+                {
+                    "item": "Campsite",
+                    "cost": 26.7
+                },
+                {
+                    "item": "Groceries",
+                    "cost": 19.7
+                },
+                {
+                    "item": "A\u0026W",
+                    "cost": 13.71
+                },
+                {
+                    "item": "Wood",
+                    "cost": 5
+                },
+                {
+                    "item": "Tim Horton's",
+                    "cost": 3.6
+                }
+            ]
         }
     ]
 }
