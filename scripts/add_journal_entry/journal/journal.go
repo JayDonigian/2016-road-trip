@@ -80,13 +80,13 @@ func (j *Journal) previousEntry(entry *Entry) (*Entry, error) {
 func (j *Journal) MissingEntries() []*Entry {
 	var missing []*Entry
 	for _, e := range j.Entries {
-		if !e.HasDailyMapFile() {
-			log.Printf("WARNING: map for %s does not exist\n", e.DailyMapFilePath())
+		if !j.HasFile(e, dayMap) {
+			log.Printf("WARNING: day map for %s does not exist\n", e.Name)
 		}
-		if !e.HasTotalMapFile() {
-			log.Printf("WARNING: total map for %s does not exist\n", e.TotalMapFilePath())
+		if !j.HasFile(e, totalMap) {
+			log.Printf("WARNING: total map for %s does not exist\n", e.Name)
 		}
-		if !e.HasEntryFile() {
+		if !j.HasFile(e, entry) {
 			missing = append(missing, e)
 		}
 	}
@@ -94,7 +94,7 @@ func (j *Journal) MissingEntries() []*Entry {
 }
 
 func (j *Journal) Write(e *Entry) error {
-	destination, err := os.Create(e.EntryFilePath())
+	destination, err := os.Create(fmt.Sprintf(fileType(entry).format(), e.Name))
 	if err != nil {
 		return err
 	}
@@ -164,6 +164,53 @@ func (j *Journal) TotalTripStats(e *Entry) []string {
 		"  * Nova Scotia",
 		"* **National Parks**",
 		"  * Acadia\n",
-		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")\n", e.End.Short, e.RelativeTotalMapFilePath()),
+		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")\n", e.End.Short, e.RelativePathToFile(totalMap)),
 	}
+}
+
+type fileType int
+
+const (
+	entry = iota
+	dayMap
+	bikeMap
+	totalMap
+)
+
+func (ft fileType) format() string {
+	switch ft {
+	case entry:
+		return "journal/entries/%s.md"
+	case dayMap:
+		return "journal/maps/day/%s.png"
+	case bikeMap:
+		return "journal/maps/bike/%s.png"
+	case totalMap:
+		return "journal/maps/total/%s-total.png"
+	default:
+		return ""
+	}
+}
+
+func (ft fileType) formatPathRelativeToEntry() string {
+	switch ft {
+	case entry:
+		return "%s.md"
+	case dayMap:
+		return "../maps/day/%s.png"
+	case bikeMap:
+		return "../maps/bike/%s.png"
+	case totalMap:
+		return "../maps/total/%s-total.png"
+	default:
+		return ""
+	}
+}
+
+func (j *Journal) HasFile(e *Entry, f fileType) bool {
+	_, err := os.Stat(fmt.Sprintf(f.format(), e.Name))
+	if err != nil {
+		return false
+	}
+	return true
 }
