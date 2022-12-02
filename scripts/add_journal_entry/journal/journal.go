@@ -13,8 +13,10 @@ import (
 )
 
 type Journal struct {
-	Entries   []*Entry `json:"entries"`
-	indexPath string
+	indexPath    string
+	MileageTotal int      `json:"mileage_total"`
+	ExpenseTotal float64  `json:"expense_total"`
+	Entries      []*Entry `json:"entries"`
 }
 
 func New(jsonPath string) (*Journal, error) {
@@ -26,7 +28,6 @@ func New(jsonPath string) (*Journal, error) {
 
 	j.indexPath = "README.md"
 
-	var previous *Entry
 	var t time.Time
 	for i, e := range j.Entries {
 		t, err = time.Parse("01-02", e.Name)
@@ -35,18 +36,13 @@ func New(jsonPath string) (*Journal, error) {
 		}
 		j.Entries[i].Date = time.Date(2016, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 
-		if e.DailyExpenseTotal == 0 {
-			for _, expense := range e.DailyExpenses {
-				e.DailyExpenseTotal += expense.Cost
+		if e.DailyExpenses == 0 {
+			for _, expense := range e.Expenses {
+				e.DailyExpenses += expense.Cost
 			}
 		}
 
-		previous, err = j.previousEntry(e)
-		if err != nil {
-			log.Printf("WARNING: Unable to find previous entry for %s", e.Name)
-		}
-
-		e.addHistory(previous)
+		e.addHistory(j)
 	}
 
 	return j, nil
@@ -107,7 +103,14 @@ func (j *Journal) Write(e *Entry) error {
 	writer := bufio.NewWriter(destination)
 	defer func() { _ = writer.Flush() }()
 
-	for _, line := range e.Write() {
+	lines := e.Write()
+	for _, line := range j.TotalTripStats(e) {
+		lines = append(lines, line)
+	}
+	for _, line := range e.PrevNextLinks() {
+		lines = append(lines, line)
+	}
+	for _, line := range lines {
 		_, _ = writer.WriteString(line + "\n")
 	}
 
@@ -147,4 +150,20 @@ func (j *Journal) Save() error {
 		return err
 	}
 	return nil
+}
+
+func (j *Journal) TotalTripStats(e *Entry) []string {
+	return []string{
+		"## Trip Statistics\n",
+		fmt.Sprintf("* **Total Distance:** %d miles", j.MileageTotal),
+		fmt.Sprintf("* **Total Budget Spent:** $%.2f", j.ExpenseTotal),
+		"* **U.S. States**",
+		"  * New Hampshire",
+		"  * Maine",
+		"* **Canadian Provinces**",
+		"  * Nova Scotia",
+		"* **National Parks**",
+		"  * Acadia\n",
+		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")\n", e.End.Short, e.RelativeTotalMapFilePath()),
+	}
 }
