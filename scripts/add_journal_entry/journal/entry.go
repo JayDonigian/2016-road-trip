@@ -2,7 +2,6 @@ package journal
 
 import (
 	"fmt"
-	"os"
 	"time"
 )
 
@@ -30,52 +29,6 @@ type Entry struct {
 	Start    Location  `json:"start"`
 	End      Location  `json:"end"`
 	Expenses []Expense `json:"expenses"`
-}
-
-func (e *Entry) EntryFilePath() string {
-	return fmt.Sprintf("journal/entries/%s.md", e.Date.Format("01-02"))
-}
-
-func (e *Entry) DailyMapFilePath() string {
-	return fmt.Sprintf("journal/maps/day/%s.png", e.Date.Format("01-02"))
-}
-
-func (e *Entry) TotalMapFilePath() string {
-	return fmt.Sprintf("journal/maps/total/%s-total.png", e.Date.Format("01-02"))
-
-}
-
-func (e *Entry) RelativeDailyMapFilePath() string {
-	return fmt.Sprintf("../maps/day/%s.png", e.Date.Format("01-02"))
-}
-
-func (e *Entry) RelativeTotalMapFilePath() string {
-	return fmt.Sprintf("../maps/total/%s-total.png", e.Date.Format("01-02"))
-
-}
-
-func (e *Entry) HasEntryFile() bool {
-	_, err := os.Stat(e.EntryFilePath())
-	if err != nil {
-		return false
-	}
-	return true
-}
-
-func (e *Entry) HasDailyMapFile() bool {
-	_, err := os.Stat(e.DailyMapFilePath())
-	if err != nil {
-		return false
-	}
-	return true
-}
-
-func (e *Entry) HasTotalMapFile() bool {
-	_, err := os.Stat(e.TotalMapFilePath())
-	if err != nil {
-		return false
-	}
-	return true
 }
 
 func (e *Entry) addHistory(j *Journal) {
@@ -117,6 +70,10 @@ func (e *Entry) Title() string {
 	return fmt.Sprintf("%s to %s", e.Start.Short, e.End.Short)
 }
 
+func (e *Entry) RelativePathToFile(ft fileType) string {
+	return fmt.Sprintf(ft.formatPathRelativeToEntry(), e.Name)
+}
+
 func (e *Entry) TitleWithEmoji() string {
 	if e.Start.Short == e.End.Short {
 		return fmt.Sprintf("%s  %s %s", e.Start.Emoji, e.Start.Short, e.Start.Emoji)
@@ -141,7 +98,7 @@ func (e *Entry) TripInfo() []string {
 		fmt.Sprintf("**Destination:** %s\n", e.End.Long),
 		fmt.Sprintf("**Distance:** %d miles\n", e.Mileage),
 		fmt.Sprintf("**Photos:** [%s Photos](https://jay-d.me/2016RT-%s-photos)\n", e.Date.Format("01/02"), e.Name),
-		fmt.Sprintf("![map from %s](%s \"day map\")\n", e.Title(), e.RelativeDailyMapFilePath()),
+		fmt.Sprintf("![map from %s](%s \"day map\")\n", e.Title(), e.RelativePathToFile(dayMap)),
 	}
 }
 
