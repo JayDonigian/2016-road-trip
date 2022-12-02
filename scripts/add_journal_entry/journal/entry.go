@@ -21,17 +21,15 @@ type Entry struct {
 	Name string    `json:"name"`
 	Date time.Time `json:"date"`
 
-	Mileage             int `json:"mileage"`
-	RunningMileageTotal int `json:"running_mileage_total"`
+	Mileage int `json:"mileage"`
 
-	BudgetStart         float64 `json:"budget_start"`
-	DailyExpenseTotal   float64 `json:"daily_expense_total"`
-	BudgetEnd           float64 `json:"budget_end"`
-	RunningExpenseTotal float64 `json:"running_expense_total"`
+	BudgetStart   float64 `json:"budget_start"`
+	DailyExpenses float64 `json:"daily_expenses"`
+	BudgetEnd     float64 `json:"budget_end"`
 
-	Start         Location  `json:"start"`
-	End           Location  `json:"end"`
-	DailyExpenses []Expense `json:"expenses"`
+	Start    Location  `json:"start"`
+	End      Location  `json:"end"`
+	Expenses []Expense `json:"expenses"`
 }
 
 func (e *Entry) EntryFilePath() string {
@@ -80,22 +78,23 @@ func (e *Entry) HasTotalMapFile() bool {
 	return true
 }
 
-func (e *Entry) addHistory(p *Entry) {
+func (e *Entry) addHistory(j *Journal) {
 	var prevMileage int
 	var prevEnd, prevExpense float64
 
-	if p == nil {
+	p, err := j.previousEntry(e)
+	if err != nil {
 		e.BudgetStart = 60
 	} else {
-		prevMileage = p.RunningMileageTotal
+		prevMileage = j.MileageTotal
 		prevEnd = p.BudgetEnd
-		prevExpense = p.RunningExpenseTotal
+		prevExpense = j.ExpenseTotal
 	}
 
 	e.BudgetStart = prevEnd + 60.00
-	e.BudgetEnd = prevEnd + 60.00 - e.DailyExpenseTotal
-	e.RunningMileageTotal = e.Mileage + prevMileage
-	e.RunningExpenseTotal = e.DailyExpenseTotal + prevExpense
+	e.BudgetEnd = prevEnd + 60.00 - e.DailyExpenses
+	j.MileageTotal = e.Mileage + prevMileage
+	j.ExpenseTotal = e.DailyExpenses + prevExpense
 }
 
 func (e *Entry) Index() string {
@@ -162,29 +161,13 @@ func (e *Entry) Budget() []string {
 		"## The Budget\n",
 		fmt.Sprintf("* $%.2f from previous day", e.BudgetStart-60),
 		"* $60.00 daily addition",
-		fmt.Sprintf("* $%.2f expenses", e.DailyExpenseTotal),
+		fmt.Sprintf("* $%.2f expenses", e.DailyExpenses),
 	}
-	for _, ex := range e.DailyExpenses {
+	for _, ex := range e.Expenses {
 		lines = append(lines, fmt.Sprintf("  * $%.2f\t%s", ex.Cost, ex.Item))
 	}
 	lines = append(lines, fmt.Sprintf("* End of day total: **$%.2f**\n", e.BudgetEnd))
 	return lines
-}
-
-func (e *Entry) TotalTripStats() []string {
-	return []string{
-		"## Trip Statistics\n",
-		fmt.Sprintf("* **Total Distance:** %d miles", e.RunningMileageTotal),
-		fmt.Sprintf("* **Total Budget Spent:** $%.2f", e.RunningExpenseTotal),
-		"* **U.S. States**",
-		"  * New Hampshire",
-		"  * Maine",
-		"* **Canadian Provinces**",
-		"  * Nova Scotia",
-		"* **National Parks**",
-		"  * Acadia\n",
-		fmt.Sprintf("![total trip from Fremont to %s](%s \"total trip map\")\n", e.End.Short, e.RelativeTotalMapFilePath()),
-	}
 }
 
 func (e *Entry) Write() []string {
@@ -195,8 +178,6 @@ func (e *Entry) Write() []string {
 		e.EmojiStory(),
 		e.JournalEntry(),
 		e.Budget(),
-		e.TotalTripStats(),
-		e.PrevNextLinks(),
 	}
 
 	var lines []string
