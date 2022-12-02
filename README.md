@@ -19,3 +19,4 @@
 ### 07-09 - 🐿  [Laurie](https://jay-d.me/2016RT-07-09) 🐿
 ### 07-10 - 🐿  [Laurie](https://jay-d.me/2016RT-07-10) 🐿
 ### 07-11 - 🐿  [Laurie to Whycocomagh](https://jay-d.me/2016RT-07-11) 🗿
+### 07-12 - 🗿  [Whycocomagh](https://jay-d.me/2016RT-07-12) 🗿

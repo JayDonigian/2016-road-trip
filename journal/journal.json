@@ -574,6 +574,48 @@
                     "cost": 3.6
                 }
             ]
+        },
+        {
+            "name": "07-12",
+            "date": "2016-07-12T00:00:00Z",
+            "mileage": 270,
+            "running_mileage_total": 2302,
+            "budget_start": -8.909999999999997,
+            "daily_expense_total": 121.2,
+            "budget_end": -130.11,
+            "running_expense_total": 1150.11,
+            "start": {
+                "emoji": "🗿",
+                "short": "Whycocomagh",
+                "long": "Whycocomagh Provincial Park, Whycocomagh, Nova Scotia, Canada"
+            },
+            "end": {
+                "emoji": "🗿",
+                "short": "Whycocomagh",
+                "long": "Whycocomagh Provincial Park, Whycocomagh, Nova Scotia, Canada"
+            },
+            "expenses": [
+                {
+                    "item": "The Rusty Anchor",
+                    "cost": 55.5
+                },
+                {
+                    "item": "Campsite",
+                    "cost": 26.7
+                },
+                {
+                    "item": "Growler @ Big Spruce",
+                    "cost": 19
+                },
+                {
+                    "item": "Park Access",
+                    "cost": 15.8
+                },
+                {
+                    "item": "Tim Horton's",
+                    "cost": 4.2
+                }
+            ]
         }
     ]
 }
